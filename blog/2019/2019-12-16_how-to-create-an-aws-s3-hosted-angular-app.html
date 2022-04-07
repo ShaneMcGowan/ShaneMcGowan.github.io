@@ -22,11 +22,11 @@
 
   <h1>How to create an AWS S3 hosted Angular App with a Custom Domain, HTTPS and Continuous Deployment</h1>
 
-  <p><i>
-      A guide on how to host an Angular app in AWS S3 with a custom domain, HTTPS and continuous deployment from a
-      GitHub
-      repo. (accurate as of 16th of December 2019 _common era_)
-    </i></p>
+  <p>
+    <i>
+      A guide on how to host an Angular app in AWS S3 with a custom domain, HTTPS and continuous deployment from a GitHub repo. (accurate as of 16th of December 2019 _common era_)
+    </i>
+  </p>
 
   <h2>Requirements</h2>
   <ul>
@@ -40,15 +40,15 @@
 
   <strong>S3</strong>
   <li>Create a bucket with site name (example.com)</li>
-  <li>Go to the `'Properties'` tab</li>
-  <li>Select `'Static Website'`</li>
-  <li>Select `'Use this bucket to host a website'` and enter index.html for both Index document and Error document (for
+  <li>Go to the <code>'Properties'</code> tab</li>
+  <li>Select <code>'Static Website'</code></li>
+  <li>Select <code>'Use this bucket to host a website'</code> and enter index.html for both Index document and Error document (for
     single page app)</li>
   <li>Manually add an index.html file to the bucket for testing purposes</li>
-  <li>Make note of the Endpoint, we will be needing this later when setting up our CDN.</li>
-  <li>Go to the `'Permissions'` tab</li>
-  <li>Select `'Bucket Policy'`</li>
-  <li>Copy the following json replacing `BUCKET_NAME` with the name of the bucket (example.com).</li>
+  <li>Make note of the Endpoint, we will be needing this later when setting up our CDN</li>
+  <li>Go to the <code>'Permissions'</code> tab</li>
+  <li>Select <code>'Bucket Policy'</code></li>
+  <li>Copy the following json replacing <code>BUCKET_NAME</code> with the name of the bucket (example.com)</li>
 
   <code class="block javascript">
     <pre>{
@@ -79,9 +79,9 @@
 
   <ul>
     <li>Create bucket with site name and subdomain (www.example.com)</li>
-    <li>Go to `'Properties'` tab</li>
-    <li>Select `'Static Website'`</li>
-    <li>Select `'Redirect requests'` and choose `'http'` for the protocol</li>
+    <li>Go to <code>'Properties'</code> tab</li>
+    <li>Select <code>'Static Website'</code></li>
+    <li>Select <code>'Redirect requests'</code> and choose <code>'http'</code> for the protocol</li>
   </ul>
 
   <h2>Custom Domain and HTTPS</h2>
@@ -89,16 +89,16 @@
     <strong>Route 53 and DNS</strong>
   </p>
   <ul>
-    <li>Click `'Create Hosted Zone'` and enter your domain example.com with type `'Public Hosted Zone'`</li>
+    <li>Click <code>'Create Hosted Zone'</code> and enter your domain example.com with type <code>'Public Hosted Zone'</code></li>
     <li>Go to the Domain Registrar where you got your domain (eg hover.com)</li>
-    <li>Copy the `ns` values from your newly created hosted zone to nameserver settings for your domain</li>
+    <li>Copy the <code>ns</code> values from your newly created hosted zone to nameserver settings for your domain</li>
   </ul>
 
   <p>
     <strong>AWS Certificate Manager (SSL Certs)</strong>
   </p>
   <ul>
-    <li>Ensure the `us-east-1` region is selected as Cloud Front needs this (top right of dashboard). More info on this here https://aws.amazon.com/certificate-manager/faqs/</li>
+    <li>Ensure the <code>us-east-1</code> region is selected as Cloud Front needs this (top right of dashboard). More info on this here https://aws.amazon.com/certificate-manager/faqs/</li>
     <li>Add your domain example.com and your domain with the `'www'` subdomain www.example.com then click `'Next'`</li>
     <li>Select `'DNS Validation'` then click `'Next'`</li>
     <li>Click `'Review'`</li>
@@ -122,15 +122,25 @@
     <li>Click `'Create Distribuion'`</li>
   </ul>
 
-  <i><strong>Note</strong>: It will take 15 to 20 minutes to create your distribution, be patient and wait before moving on to the next
-    step.</i>
+  <p>
+    <i>
+      <strong>Note</strong>: It will take 15 to 20 minutes to create your distribution, be patient and wait before moving on to the next step.
+    </i>
+  </p>
 
-  <i><strong>Note</strong>: Your first 1,000 invalidation path requests each month are free, but invalidations after this will cost
-    $0.005 per additonal path invalidated.</i>
+  <p>
+    <i>
+      <strong>Note</strong>: Your first 1,000 invalidation path requests each month are free, but invalidations after this will cost $0.005 per additonal path invalidated.
+    </i>
+  </p>
 
-  <i><strong>Note</strong>: You can have a max of 3,000 path invalidation requests in progress at once. A wildcard '*' request can
-    invalidate a max of 15 paths at once so if your app contains more than 15 files, you will need to remove each path
-    manually in your deployment script, not using the wild card path.</i>
+  <p>
+    <i>
+      <strong>Note</strong>: You can have a max of 3,000 path invalidation requests in progress at once. A wildcard '*' request can
+      invalidate a max of 15 paths at once so if your app contains more than 15 files, you will need to remove each path
+      manually in your deployment script, not using the wild card path.
+    </i>
+  </p>
 
   <p>
     <strong>Back to Route 53</strong>
@@ -150,7 +160,6 @@
     site with www subdomain. Eventually the www subdomain will work also so be patient.</i>
 
   <i>Your site should now be live under https://example.com and https://www.example.com</i>
-
 
   <h2>Continuous Delivery</h2>
 

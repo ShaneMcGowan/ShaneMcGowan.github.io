@@ -2,8 +2,9 @@ code {
   border: 1px solid #44475a;
   background: whitesmoke;
   color: #f8f8f2;
-  padding: 0.2rem;
+  padding: 0.1rem;
   background-color: #282a36;
+  font-style: normal;
 }
 
 code.block {
