@@ -2,226 +2,26 @@
 <html>
 
 <head>
-  <!-- Google Analytics - Please forgive me dear visitor -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-163798775-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'UA-163798775-1');
-  </script>
-
-  <title>Shane McGowan | Hi friend ♥</title>
-
+  <title>Shane McGowan</title>
   <meta charset="UTF-8">
-  <meta name="description" content="Personal Website of Shane McGowan">
-  <meta name="keywords" content="HTML,CSS,JavaScript">
   <meta name="author" content="Shane McGowan">
+  <meta name="description" content="Personal Website of Shane McGowan">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://kit.fontawesome.com/acf63bba01.js" crossorigin="anonymous"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      border: 0;
-      -webkit-box-sizing: border-box;
-      /* Safari/Chrome, other WebKit */
-      -moz-box-sizing: border-box;
-      /* Firefox, other Gecko */
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      height: 100%;
-      width: 100%;
-      color: #FFFFFF;
-      font-family: Helvetica, Arial, sans-serif;
-      background: url('/assets/images/background.jpg') no-repeat center center scroll;
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      background-size: cover;
-      -o-background-size: cover;
-    }
-
-    .container {
-      min-height: 100vh;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: row;
-      flex-wrap: wrap;
-    }
-
-    .container-h {
-      min-height: 100%;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      flex-wrap: wrap;
-    }
-
-    .padding {
-      padding: 10px;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    .col-12 {
-      width: 100%;
-    }
-
-    h1 {
-      font-weight: 100;
-      font-size: 4em;
-      padding: 0;
-      margin: 0;
-    }
-
-    h3 {
-      font-weight: 100;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .nav {
-      width: 100%;
-      height: 60px;
-      position: fixed;
-      top: 0;
-    }
-
-    .nav ul {
-      padding: 20px;
-      margin: 0 auto;
-      list-style: none;
-      text-align: center;
-    }
-
-    .nav ul li {
-      display: inline-block;
-      margin: 5px;
-      font-size: 1rem;
-    }
-
-    .nav ul li a {
-      font-weight: bold;
-    }
-
-    .nav ul li a:hover {
-      text-shadow: 2px 2px 10px #000000;
-    }
-
-
-    /* Icons */
-    .icon-container {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-
-      width: 100vw;
-      margin-top: 20px;
-    }
-
-    .icon-container .icon {
-      margin: 1em;
-    }
-
-    .fa-linkedin:hover {
-      color: #00aced;
-    }
-
-    .fa-github:hover {
-      color: #000000;
-    }
-
-    .fa-twitter:hover {
-      color: #1dcaff;
-    }
-
-    .fa-dev:hover {
-      color: #000000;
-    }
-
-    #name:hover {
-      cursor: pointer;
-    }
-  </style>
-
+  <link rel="stylesheet" href="styles/index.css">
 </head>
 
-<body class="container">
+<body>
+  <p>Hi friend</p>
+  <ul>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="https://github.com/ShaneMcGowan">GitHub</a></li>
+    <li><a href="https://twitter.com/TheShaneMcGowan">Twitter</a></li>
+    <li><a href="https://www.linkedin.com/in/shane-mc-gowan/">LinkedIn</a></li>
+  </ul>
 
-  <section id="main" class="container-h col-12">
-    <h1 id="name" class="padding text-center">Shane McGowan </h1>
-    <h3 id="bio" class="padding">Software and Web Development</h3>
-
-    <section id="icons" class="icon-container">
-      <a id="linkBlog" href="https://dev.to/shane" target="_blank" class="icon">
-        <i class="fab fa-dev fa-4x" aria-hidden="true"></i>
-      </a>
-      <a id="linkLinkedIn" href="https://www.linkedin.com/in/shane-mc-gowan/" target="_blank" class="icon">
-        <i class="fa fa-linkedin fa-4x" aria-hidden="true"></i>
-      </a>
-      <a id="linkGitHub" href="https://github.com/ShaneMcGowan" target="_blank" class="icon">
-        <i class="fa fa-github fa-4x fa-spin" aria-hidden="true"></i>
-      </a>
-      <a id="linkTwitter" href="https://twitter.com/TheShaneMcGowan" target="_blank" class="icon">
-        <i class="fab fa-twitter fa-4x" aria-hidden="true"></i>
-      </a>
-    </section>
-
-    <section>
-      <img id="imgZuck" class="hidden">
-    </section>
-
-  </section>
+  <p>
+    Feel free to contact me at <a href="mailto:hi@shanemcgowan.com">hi@shanemcgowan.com</a>
+  </p>
 </body>
-<script>
-  const name = document.getElementById('name');
-  let nameRunning = false;
-
-  (function () {
-    // Twitter Icon hover
-    document.getElementById('linkTwitter').addEventListener('mouseover', function () {
-      document.body.style.backgroundImage = 'url(/assets/images/zuck.png)';
-    });
-    document.getElementById('linkTwitter').addEventListener('mouseout', function () {
-      document.body.style.backgroundImage = '';
-    });
-
-    // Name script
-    document.getElementById('name').addEventListener('click', function () {
-      nameRunning = !nameRunning;
-      if (nameRunning === true) {
-        nameScript();
-      }
-    });
-
-  })();
-
-  function nameScript() {
-    setTimeout(function () {
-      if (nameRunning === true) {
-        const name = document.getElementById('name');
-        const first = name.innerHTML[0];
-        name.innerHTML = name.innerHTML.substr(1, name.innerHTML.length) + first;
-        nameScript();
-      }
-    }, 250);
-  }
-</script>
-
-
-
 
 </html>

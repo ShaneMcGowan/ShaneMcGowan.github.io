@@ -1,0 +1,23 @@
+code {
+  border: 1px solid #44475a;
+  background: whitesmoke;
+  color: #f8f8f2;
+  padding: 0.2rem;
+  background-color: #282a36;
+}
+
+code.block {
+  display: block;
+  padding: 1rem;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  overflow: auto;
+}
+
+code.javascript {
+  color: #ffb86c;
+}
+
+code.yaml {
+  color: #bd93f9;
+}

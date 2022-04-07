@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>How to create an AWS S3 hosted Angular App with a Custom Domain, HTTPS and Continuous Deployment</title>
+  <meta charset="UTF-8">
+  <meta name="author" content="Shane McGowan">
+  <meta name="description" content="How to create an AWS S3 hosted Angular App with a Custom Domain, HTTPS and Continuous Deployment">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles/index.css">
+  <link rel="stylesheet" href="/styles/blog-post.css">
+  <link rel="stylesheet" href="/styles/code.css">
+</head>
+
+<body>
+  <a href="/">home</a> /
+  <a href="/blog.html">blog</a>
+
+  <span class="blog-post-date">
+    <i>December 16th 2019</i>
+  </span>
+
+  <h1>How to create an AWS S3 hosted Angular App with a Custom Domain, HTTPS and Continuous Deployment</h1>
+
+  <p><i>
+      A guide on how to host an Angular app in AWS S3 with a custom domain, HTTPS and continuous deployment from a
+      GitHub
+      repo. (accurate as of 16th of December 2019 _common era_)
+    </i></p>
+
+  <h2>Requirements</h2>
+  <ul>
+    <li>A GitHub Account</li>
+    <li>A GitHub Repo containing an Angular App created in the root directory</li>
+    <li>An AWS Account</li>
+    <li>A domain name with the ability to update it's DNS settings</li>
+  </ul>
+
+  <h2>Basic Static Site Setup</h2>
+
+  <strong>S3</strong>
+  <li>Create a bucket with site name (example.com)</li>
+  <li>Go to the `'Properties'` tab</li>
+  <li>Select `'Static Website'`</li>
+  <li>Select `'Use this bucket to host a website'` and enter index.html for both Index document and Error document (for
+    single page app)</li>
+  <li>Manually add an index.html file to the bucket for testing purposes</li>
+  <li>Make note of the Endpoint, we will be needing this later when setting up our CDN.</li>
+  <li>Go to the `'Permissions'` tab</li>
+  <li>Select `'Bucket Policy'`</li>
+  <li>Copy the following json replacing `BUCKET_NAME` with the name of the bucket (example.com).</li>
+
+  <code class="block javascript">
+    <pre>{
+  "Statement": [
+    {
+      "Sid": "AllowPublicRead",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::BUCKET_NAME/*"
+      ]
+    }
+  ]
+}</pre>
+  </code>
+
+  <p><i>
+      <strong>Note</strong>: The policy found in bucket-policy.json will cause all objects in this bucket to be
+      <strong>publicly available by default</strong>, this is required later by our deployment script as normally
+      objects are made private by default. If you do
+      not do this, your site will not be accessible.
+    </i></p>
+
+  <ul>
+    <li>Create bucket with site name and subdomain (www.example.com)</li>
+    <li>Go to `'Properties'` tab</li>
+    <li>Select `'Static Website'`</li>
+    <li>Select `'Redirect requests'` and choose `'http'` for the protocol</li>
+  </ul>
+
+  <h2>Custom Domain and HTTPS</h2>
+  <p>
+    <strong>Route 53 and DNS</strong>
+  </p>
+  <ul>
+    <li>Click `'Create Hosted Zone'` and enter your domain example.com with type `'Public Hosted Zone'`</li>
+    <li>Go to the Domain Registrar where you got your domain (eg hover.com)</li>
+    <li>Copy the `ns` values from your newly created hosted zone to nameserver settings for your domain</li>
+  </ul>
+
+  <p>
+    <strong>AWS Certificate Manager (SSL Certs)</strong>
+  </p>
+  <ul>
+    <li>Ensure the `us-east-1` region is selected as Cloud Front needs this (top right of dashboard). More info on this here https://aws.amazon.com/certificate-manager/faqs/</li>
+    <li>Add your domain example.com and your domain with the `'www'` subdomain www.example.com then click `'Next'`</li>
+    <li>Select `'DNS Validation'` then click `'Next'`</li>
+    <li>Click `'Review'`</li>
+    <li>Click `'Confirm and Request'`</li>
+    <li>Expand the area for each domain and click `'Create record in route53'`</li>
+    <li>Click `'Continue'`</li>
+  </ul>
+
+  <p>
+    <strong>AWS Cloud Front (CDN)</strong>
+  </p>
+  <ul>
+    <li>Click `'Create Distribution'`</li>
+    <li>Under `'Web'` click `'Get Started'`</li>
+    <li>Under `'Origin Domain Name'` enter the S3 Site Endpoint you made a note of earlier. It should be in the format **bucket.name**.s3-website-**aws-region**.amazonaws.com</li>
+    <li>Under `'Viewer Protocol Policy'`, select `'redirect http to https'`</li>
+    <li>Under `'Price class'` select `'use only US, Canada and Europe'`. Users outside these regions will experience more latency but this is cheaper</li>
+    <li>Under `'Alternate Domain Names (CNAMEs)'` enter your apex domain (example.com) and then on a new line enter your domain with the `'www'` subdomain (www.example.com)</li>
+    <li>Under `'SSL Certificate'` select `'Custom SSL Certificate'` and choose the Certificate we just created in AWS Certificate Manager</li>
+    <li>Under `'Default Root Object'` enter `'index.html'`</li>
+    <li>Click `'Create Distribuion'`</li>
+  </ul>
+
+  <i><strong>Note</strong>: It will take 15 to 20 minutes to create your distribution, be patient and wait before moving on to the next
+    step.</i>
+
+  <i><strong>Note</strong>: Your first 1,000 invalidation path requests each month are free, but invalidations after this will cost
+    $0.005 per additonal path invalidated.</i>
+
+  <i><strong>Note</strong>: You can have a max of 3,000 path invalidation requests in progress at once. A wildcard '*' request can
+    invalidate a max of 15 paths at once so if your app contains more than 15 files, you will need to remove each path
+    manually in your deployment script, not using the wild card path.</i>
+
+  <p>
+    <strong>Back to Route 53</strong>
+  </p>
+  <ul>
+    <li>Click `'Hosted Zones'`</li>
+    <li>Click your domain example.com</li>
+    <li>Click `'Create Record Set'` and leave name blank
+      Set `'Alias'` to `'Yes'`
+      Select `'Alias Target'` and select the Cloud Front deployment that we created earlier from the dropdown
+      Click Create
+    </li>
+    <li>Repeat as above but enter `'www'` as the name this time.</li>
+  </ul>
+
+  <i><strong>Note</strong>: This may take several minutes to propogate, I have experienced site without www subdomain working before
+    site with www subdomain. Eventually the www subdomain will work also so be patient.</i>
+
+  <i>Your site should now be live under https://example.com and https://www.example.com</i>
+
+
+  <h2>Continuous Delivery</h2>
+
+  <strong>AWS Code Pipeline</strong>
+  <ul>
+    <li> Navigate to AWS Code Pipeline</li>
+    <li> Enter a name for your pipeline</li>
+    <li> Select `'New service role'`, the default name is fine</li>
+    <li> Ensure `'Allow AWS CodePipeline to create a service role so it can be used with this new pipeline'` is checked</li>
+    <li> Click `'Next'`</li>
+  </ul>
+  <ul>
+    <li> In the `'Source provider'` dropdown, select `'GitHub'`</li>
+    <li> Click `'Connect To GitHub'` and allow AWS access to your GitHub account</li>
+    <li> In the `'Repository'` dropdown, select your repo</li>
+    <li> In the `'Branch'` dropdown, select your desired branch</li>
+    <li> Under `'Change detection options'` ensure `'GitHub webhooks'` is selected</li>
+    <li> Click `'Next'`</li>
+  </ul>
+
+  <ul>
+    <li>In the `'Build provider'` dropdown, select `'AWS CodeBuild'`</li>
+    <li>In the `'Region'` dropdown, select your desired AWS region</li>
+    <li>Under `'Project name'`, click `'Create project'`. This will bring you to a popup window.</li>
+  </ul>
+
+  <ul>
+    <li>In the Popup Window, under `'Project Name'` enter a desired name</li>
+    <li>Under `'Environment image'` select `'Managed image'`</li>
+    <li>Under `'Operating System'` select `'Ubuntu'`. This includes the language runtimes we need for building our Angular App</li>
+    <li>Under `'Runtimes'` select `'Standard'`</li>
+    <li>Under `'Image'` select `'aws/codebuild/standard:3.0'`. This contains NodeJS version 12 which we want.</li>
+    <li>Under `'Image version'` select `'Always use the latest image for this runtime version'`</li>
+    <li>Under `'Environment Type'` select `'Linux'`</li>
+    <li>Under `'Service role'` select `'New Service Role'` and enter an appropriate name (for example 'codebuild-service-role-s3-angular')</li>
+    <li>Under `'Build specifications'` select `'User a buildspec file'`</li>
+    <li>Click `'Continue to CodePipeline'`</li>
+    <li>You should be brought back to CodePipeline</li>
+    <li>Click `'Next'`</li>
+    <li>Click `'Skip deploy stage'` as we covered this in our build pipeline. </li>
+    <li>Click `'Create pipeline'`</li>
+  </ul>
+
+  <strong>AWS CodeBuild</strong>
+  <ul>
+    <li> Create a `buildspec.yaml` file in the root of your repo. This will be used during the CodeBuild part of our CD
+      pipeline to build your angular app and copy it to the root of the S3 bucket.</li>
+  </ul>
+
+  <i>
+    Copy the following to the <code>buildspec.yaml</code> file.
+    Replace <code>@SITE_NAME</code> with your site name (example.com).
+    Replace <code>@ANGULAR_APP_NAME</code> with the name of the folder which contains your angular app after running ng build which
+    can be found inside the <code>dist</code> folder for default angular apps
+    Replace <code>@ANGULAR_APP_ENVIRONMENT</code> with the build environment for your angular app, <code>prod</code> being the default value
+    Replace <code>@CLOUDFRONT_DISTRIBUTION_ID</code> with the ID of the cloudfront distrubtion you created earlier. This can be found
+    in your Cloudfront Dashboard.
+  </i>
+
+  <code class="block yaml">
+  <pre>
+version: 0.2
+    
+env:
+  variables:
+    S3_BUCKET: "@SITE_NAME"
+    APP_NAME: "@ANGULAR_APP_NAME"
+    BUILD_ENV: "@ANGULAR_APP_ENVIRONMENT"
+    CDN_DISTRIBUTION_ID: "@CLOUDFRONT_DISTRIBUTION_ID"
+    
+  phases:
+    install:
+      runtime-versions:
+        # NodeJS included in the docker image
+        nodejs: 12
+      commands:
+        # Install node dependancies.
+        - npm install
+  
+  build:
+    commands:
+      # Builds Angular application.
+      - node ./node_modules/@angular/cli/bin/ng build --$BUILD_ENV
+
+  post_build:
+    commands:
+      # Clear S3 bucket.
+      - aws s3 rm s3://$S3_BUCKET --recursive
+      # Copy files from dist to S3
+      - cd dist
+      - aws s3 cp $APP_NAME s3://$S3_BUCKET --recursive
+      # Begin cloudfront invalidation
+      - aws cloudfront create-invalidation --distribution-id $CDN_DISTRIBUTION_ID --paths "/*"
+</pre>
+</code>
+
+
+  <strong>CodePipeline IAM Role Permissions</strong>
+  <p>
+    <i>
+      An IAM Role will have been created for both Code Pipeline and CodeBuild. You need to give the CodeBuild role the
+      permission to access S3 and Cloudfront*
+    </i>
+  </p>
+
+  <ul>
+    <li>Go to the IAM Dashboard</li>
+    <li>Click on `'Roles'`</li>
+    <li>In the table, click on the role that was created during the CodeBuild in the previous step.</li>
+    <li>Click `'Attach Policy'`</li>
+    <li>Enter `'S3'` into the search bar and click the checkbox beside `'AmazonS3FullAccess'`.</li>
+    <li>Enter `'CloudFront'` into the search bar and click the checkbox beside `'CloudFrontFullAccess'`.</li>
+    <li>Click `'Attach Policy'` to add the policy to this role.</li>
+  </ul>
+
+  <h2>The End</h2>
+  <p>
+    You did it, good work friend ❤️
+  </p>
+  <p>
+    Psst... Follow me on twitter <a target="_blank" href="https://twitter.com/TheShaneMcGowan">https://twitter.com/TheShaneMcGowan</a>
+  </p>
+  <br />
+
+</body>
+
+</html>
