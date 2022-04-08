@@ -22,3 +22,7 @@ code.javascript {
 code.yaml {
   color: #bd93f9;
 }
+
+span.code-green {
+  color: #50fa7b;
+}

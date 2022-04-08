@@ -5,7 +5,7 @@
   <title>Using Postman with Java Spring and CSRF Tokens</title>
   <meta charset="UTF-8">
   <meta name="author" content="Shane McGowan">
-  <meta name="description" content="__BLOG_DESCRIPTION__">
+  <meta name="description" content="Java Spring CSRF Tokens VS. Postman, Who will win?">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/styles/index.css">
   <link rel="stylesheet" href="/styles/blog-post.css">
@@ -20,12 +20,86 @@
     <i>April 7th, 2020</i>
   </span>
 
+  <img src="/assets/blog/2020/2020-04-07_header.png" />
+
   <h1>Using Postman with Java Spring and CSRF Tokens
   </h1>
+  <i>Java Spring CSRF Tokens VS. Postman, Who will win?</i>
 
-  TODO: Migrate from here
-  <a target="_blank"
-    href="https://dev.to/shane/using-postman-with-java-spring-and-csrf-tokens-di0">https://dev.to/shane/using-postman-with-java-spring-and-csrf-tokens-di0</a>
+  <p>
+    Java Spring will return a <code>403 Forbidden</code> if any request besides a <code>GET</code> request is missing a Cross Site Request Forgery Token (CSRF Token) in the <code>X-XSRF-TOKEN</code> Header. Here is how to fix that issue when using Postman. I have seen people online suggest that you disable CSRF Tokens but please don't do that. That is silly. Those people are sily.
+  </p>
+
+
+  <h2>
+    Creating an environment
+  </h2>
+
+  <p>
+    We need to create an environment in which to store our <code>CSRF Token</code>
+  </p>
+
+  <p>
+    In the top right of Postman, click the cog.
+  </p>
+  <img src="/assets/blog/2020/2020-04-07_01.png" />
+
+  <p>
+    In the Pop Up window, Click <code>Add</code>
+  </p>
+  <img src="/assets/blog/2020/2020-04-07_02.png" />
+
+  <ul>
+    <li>Enter an appropriate <code>Environment Name</code></li>
+    <li>Enter <code>xsrf-token</code> in the first column.</li>
+    <li>Click <code>Add</code> in the bottom right corner</li>
+  </ul>
+
+  <img src="/assets/blog/2020/2020-04-07_03.png" />
+
+  <p>
+    Ensure your environment is selected in the drop-down in the top right.
+  </p>
+
+
+  <h2>Getting the CSRF Token</h2>
+
+  <code>GET</code> requests do not require a CSRF Token to be allowed through our <code>SpringSecurityConfig</code>
+  <ul>
+    <li>Create a <code>GET</code> request</li>
+    <li>Navigate to the <code>Tests</code> tab</li>
+    <li>Enter the following
+      <code class="block javascript">pm.environment.set("xsrf-token", decodeURIComponent(pm.cookies.get("XSRF-TOKEN")));</code>
+    </li>
+  </ul>
+
+  <img src="/assets/blog/2020/2020-04-07_04.png" />
+
+  <p>
+    Now when you call this endpoint in Postman, your CSRF Token will be stored in your environment variables.
+  </p>
+
+
+  <h2>Using the CSRF Token</h2>
+  <ul>
+    <li>Go to your request that requires the CSRF Token</li>
+    <li>Navigate to the <code>Headers</code> tab</li>
+    <li>Enter a key of <code>X-XSRF-TOKEN</code> and a value of <code>{{xsrf-token}}</code>, the <code>{{xsrf-token}}</code> value will be populated from our Environment we created earlier.</li>
+  </ul>
+  <img src="/assets/blog/2020/2020-04-07_05.png" />
+
+  <p>
+    Your request should now be from from CSRF errors
+  </p>
+
+  <h2>Things to watch out for</h2>
+  <ul>
+    <li>Be sure you have actually selected an Environment. I have forgotten to do this several times.</li>
+    <li>Be sure to call the <code>GET</code> request again to populate the value in case it has become invalid or has expired.</li>
+    <li>Have a nice day</li>
+  </ul>
+
+  </br>
 
 </body>
 
