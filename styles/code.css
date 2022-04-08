@@ -23,6 +23,10 @@ code.yaml {
   color: #bd93f9;
 }
 
+code.html {
+  color: #50fa7b;
+}
+
 span.code-green {
   color: #50fa7b;
 }
