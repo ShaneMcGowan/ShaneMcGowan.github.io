@@ -6,7 +6,7 @@
   </title>
   <meta charset="UTF-8">
   <meta name="author" content="Shane McGowan">
-  <meta name="description" content="__BLOG_DESCRIPTION__">
+  <meta name="description" content="A guide on how to use Maven with JDK8 on the new ARM based M1 MacBook Pro">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/styles/index.css">
   <link rel="stylesheet" href="/styles/blog-post.css">
@@ -23,19 +23,102 @@
 
   <header>
     <img src="/assets/blog/2020/2021-05-23_header.webp">
-    <h1>Configure M1 Mac to use JDK8 with Maven
+    <h1>Configure M1 Mac to use JDK8 with Maven</h1>
+    <i>A guide on how to use Maven with JDK8 on the new ARM based M1 MacBook Pro</i>
   </header>
 
-  TODO: Migrate from here
-  <a target="_blank" href="https://dev.to/shane/configure-m1-mac-to-use-jdk8-with-maven-4b4g">
-    https://dev.to/shane/configure-m1-mac-to-use-jdk8-with-maven-4b4g
-  </a>
+  <p>
+    Getting started with the new ARM based M1 Macs can be a bit awkward so here is how you get Maven working with JDK 8.
+  </p>
+
+  <h2>Install Homebrew</h2>
+  <p>
+    Homebrew is what we will use to install <code>Maven</code>. You can instructions on downloading Brew here https://brew.sh/ or
+    by simply running this script in your terminal
+  </p>
+
+  <code class="block bash">
+    <pre>
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+</pre>
+  </code>
+
+  <h2>Install Maven via Homebrew</h2>
+  <p>
+    Run the following command in your terminal
+  </p>
+  <code class="block bash">
+    <pre>
+brew install maven
+</pre>
+      </code>
+
+  <h2>Install ARM based JDK 8 from Azul</h2>
+  <p>
+    We need to get a version of yellow JDK 8 that works on the ARM based M1 Mac, Azul provide just what we need. At the link
+    below, enter the following if the link doesn't populate it for you.
+  </p>
+  <ul>
+    <li>Java Version - Java 8 (LTS)</li>
+    <li>Operating System - macOS</li>
+    <li>Architecture - ARM 64-bit</li>
+    <li>Java Package - JDK</li>
+  </ul>
+
+  <p>
+    Download the .dmg file here
+    <a
+      href="https://www.azul.com/downloads/?version=java-8-lts&os=macos&architecture=arm-64-bit&package=jdk">https://www.azul.com/downloads/?version=java-8-lts&os=macos&architecture=arm-64-bit&package=jdk</a>
+  </p>
+
+  <p>
+    Install the .dmg file
+  </p>
+
+  <h2>Set JAVA_HOME environment variable</h2>
+  <p>
+    Now you need to set the <code>JAVA_HOME</code> environment variable to point at our new JDK 8 install. This is the environment
+    variable that Maven looks for.
+    To add the environment variable, you need to add it to your zsh profile. This can be done by adding the following
+    line to your <code>.zshrc</code> file.
+    The <code>.zshrc</code> file should be located in home directory.
+    You can navigate to it via
+  </p>
+  <code class="block bash">
+    <pre>
+<span class="code-green">># Navigate to directory</span>
+cd ~
+<span class="code-green"># Editing the file</span>
+vim .zshrc
+</pre>
+</code>
+
+  <p>
+    Add the following line to the file and then save
+  </p>
+  <code class="block bash">
+  <pre>
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home/jre
+</pre>
+    </code>
+
+  <p>
+    Now restart your terminal
+  </p>
+
+  <h2>
+    That's it!
+  </h2>
+  <p>
+    When running Maven from your terminal then now it will use JDK8
+  </p>
 
   <footer>
     <p>
       Thanks for reading 📕👀
-      </br>
-      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a> 👋 and
+      <br />
+      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a>
+      👋 and
       my SaaS start-up's twitter 🚀 <a target="_blank" href="https://twitter.com/HappyHousingIE">@HappyHousingIE</a> 🚀
     </p>
   </footer>
