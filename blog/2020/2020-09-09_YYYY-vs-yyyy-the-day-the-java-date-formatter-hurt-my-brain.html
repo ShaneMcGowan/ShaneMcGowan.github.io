@@ -26,16 +26,92 @@
     <h1>YYYY vs yyyy - The day the Java Date Formatter hurt my brain</h1>
   </header>
 
-  TODO: Migrate from here
-  <a target="_blank" href="https://dev.to/shane/yyyy-vs-yyyy-the-day-the-java-date-formatter-hurt-my-brain-4527">
-    https://dev.to/shane/yyyy-vs-yyyy-the-day-the-java-date-formatter-hurt-my-brain-4527
-  </a>
+  <h2>Intro</h2>
+  <p>
+    Dates in programming are hard. The ISO-8601 Date standard made them easier but to be entirely honest I'm not
+    ISO-8601 Certified so I'm not very good at my job. What I do know though is the very important difference between
+    <code>YYYY</code> and <code>yyyy</code> when formatting dates.
+  </p>
+
+  <h2>The Difference between y and Y</h2>
+  <p>
+    According to the DateTimeFormatter Java Docs (which implements the ISO-8601 specification)
+  </p>
+  <ul>
+    <li>y (lowercase) is year</li>
+    <li>Y (uppercase) is 'week-based-year'.</li>
+  </ul>
+
+  <p>
+    This difference will cause your code to work perfectly fine, except for when dealing with dates at the very end of
+    some years.
+  </p>
+
+  <p>
+    Here is an example that I had the absolute PLEASURE of dealing with last year. For the date 31/12/2019 (December
+    31st 2019), <code>yyyy</code> will output 2019 but <code>YYYY</code> will output 2020. The reason for this is the
+    week that the 31st of December falls in technically is the first week of 2020. This issue can be a pain to notice
+    and debug.
+    In my case, 31/12/2019 was being sent from the frontend, being stored correctly in the DB, but was turning into
+    31/12/2020 when being returned and no one had any idea why. Our default JSON date formatter was the culprit, using
+    <code>YYYY</code> where it should have been using <code>yyyy</code> (some clumsily copied and pasted quick solution
+    by myself ofcourse).
+  </p>
+
+  <h2>Example</h2>
+
+  <h3>Declare formatters</h3>
+  <code class="block java">
+  <pre>
+<span class="code-green">// y (Lowercase)</span>
+DateTimeFormatter formatteryyyy = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+<span class="code-green">// Y (Uppercase)</span>
+DateTimeFormatter formatterYYYY = DateTimeFormatter.ofPattern("YYYY-MM-dd");
+</pre>
+</code>
+
+  <h3> When converting from Date to String </h3>
+  <code class="block java">
+  <pre>
+<span class="code-green">// Contains value from Database (December 31st 2019)</span>
+LocalDateTime dateTime;
+
+<span class="code-green">// String value will be 2019-12-31</span>
+String yyyy = dateTime.format(formatteryyyy);
+
+<span class="code-green">// String value will be 2020-12-31</span>
+String YYYY = dateTime.format(formatterYYYY);
+</pre>
+</code>
+
+
+  <h3> When convert from String to Date </h3>
+  <code class="block java">
+  <pre>
+<span class="code-green">// Actual date value will be 2020-12-31</span>
+LocalDateTime parsedDateyyyy = LocalDateTime.parse("2020-12-31", formatteryyyy); 
+
+<span class="code-green">// Actual date value will be 2019-12-31</span>
+LocalDateTime parsedDateYYYY= LocalDateTime.parse("2020-12-31", formatterYYYY);  
+</pre>
+</code>
+
+  <h2>Conclusion</h2>
+  <p>
+    In 99% of use cases, the following is true:
+  </p>
+  <ul>
+    <li>yyyy good</li>
+    <li>YYYY bad</li>
+  </ul>
 
   <footer>
     <p>
       Thanks for reading 📕👀
-      </br>
-      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a> 👋 and
+      <br />
+      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a>
+      👋 and
       my SaaS start-up's twitter 🚀 <a target="_blank" href="https://twitter.com/HappyHousingIE">@HappyHousingIE</a> 🚀
     </p>
   </footer>

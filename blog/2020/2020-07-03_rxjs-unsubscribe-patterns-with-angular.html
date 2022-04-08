@@ -2,15 +2,15 @@
 <html>
 
 <head>
-  <title>RxJS Unsubscribe patterns with Angular
-  </title>
-  <meta charset="UTF-8">
-  <meta name="author" content="Shane McGowan">
-  <meta name="description" content="__BLOG_DESCRIPTION__">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/styles/index.css">
-  <link rel="stylesheet" href="/styles/blog-post.css">
-  <link rel="stylesheet" href="/styles/code.css">
+  <title>RxJS Unsubscribe patterns with Angular</title>
+  <meta charset="UTF-8" />
+  <meta name="author" content="Shane McGowan" />
+  <meta name="description"
+    content="A nice pattern for handling unsubscribing from observables in Angular when using RxJS and some not so nice patterns also." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/styles/index.css" />
+  <link rel="stylesheet" href="/styles/blog-post.css" />
+  <link rel="stylesheet" href="/styles/code.css" />
 </head>
 
 <body>
@@ -22,22 +22,217 @@
   </span>
 
   <header>
-    <img src="/assets/blog/2020/2020-07-03_header.webp">
+    <img src="/assets/blog/2020/2020-07-03_header.webp" />
     <h1>RxJS Unsubscribe patterns with Angular</h1>
+    <i>A nice pattern for handling unsubscribing from observables in Angular
+      when using RxJS and some not so nice patterns also.</i>
   </header>
 
-  TODO: Migrate from here
-  <a target="_blank" href="https://dev.to/shane/rxjs-unsubscribe-patterns-with-angular-5goh">https://dev.to/shane/rxjs-unsubscribe-patterns-with-angular-5goh</a>
+  <p>
+    RxJS Observables are classsss (if you know how to use them) but there
+    are quite a few common issues people encounter. If you don't use them
+    correctly you can end up with memory leaks. If you don't use them
+    efficiently you can end up with a lot of unnecessarily verbose code.
+  </p>
+
+  <h2>How to get memory leaks</h2>
+  <p>
+    In RxJS, each time you <code>subscribe</code> to an <code>Observable</code> or <code>Subject</code> you
+    then need to <code>unsubscribe</code>. If you don't <code>unsubscribe</code> the
+    <code>subscription</code> will exist in memory and any time the subject emits a
+    value, the logic in the subscription will run.
+  </p>
+
+  <code class="block javascript">
+        <pre>
+export class MemoryLeakComponent {
+
+  // Our subject that we will subscribe to
+  subjectA$: Subject&lt;number&gt; = new Subject&lt;number&gt;();
+
+  constructor(){
+    // Create your memory leaks
+    this.subjectA$.subscribe(value => { 
+      // logic goes here ...
+    });
+    this.subjectA$.subscribe(value => {
+    // logic goes here ...
+    });
+    this.subjectA$.subscribe(value => {
+    // logic goes here ...
+    });
+    this.subjectA$.subscribe(value => {
+    // logic goes here ...
+    });
+  }
+}
+</pre
+        >
+      </code>
+
+  <p>
+    When you navigate away from this component and then navigate back, the
+    subscriptions still exist and 4 more subscriptions will be added upon
+    each return to this component. If you had, for example, subscribed to a
+    <code>Subject</code> from an injected service, the logic in your subscription would
+    run in the background any time a value was emitted from the <code>Subject</code>
+    even though the instance of the component it was relating to no longer
+    exists. This can lead to memory leaks and performance issues. To avoid
+    this, you need to <code>unsubscribe</code> which comes with it's own caveats.
+  </p>
+
+  <h2>How to end up with unnecessarily verbose code</h2>
+
+  <code class="block javascript">
+    <pre>
+export class VerboseSubscriptionComponent implements OnDestroy {
+
+  // Our subject that we will subscribe to
+  subjectA$: Subject&lt;number&gt; = new Subject&lt;number&gt;();
+
+  // The references we will use for our subscriptions;
+  subscriptionA: Subscription;
+  subscriptionB: Subscription;
+  subscriptionC: Subscription;
+  subscriptionD: Subscription;
+
+  constructor(){
+    // Create our verbose subscriptions
+    this.subscriptionA = this.subjectA$.subscribe(value => { 
+      // logic goes here ...
+    });
+    this.subscriptionB = this.subjectA$.subscribe(value => { 
+      // logic goes here ...
+    });
+    this.subscriptionC = this.subjectA$.subscribe(value => { 
+      // logic goes here ...
+    });
+    this.subscriptionD = this.subjectA$.subscribe(value => { 
+      // logic goes here ...
+    });
+  }
+
+  ngOnDestroy(){
+    // Manually unsubscribe from each subscription
+    this.subscriptionA.unsubscribe();
+    this.subscriptionB.unsubscribe();
+    this.subscriptionC.unsubscribe();
+    this.subscriptionD.unsubscribe();
+  }
+}
+</pre>
+      </code>
+
+  <p>
+    This solves the memory leak issue but leaves room for error and is very
+    verbose if we have a large amount of subscriptions. If at any point one
+    of our <code>subscripton</code> variables is unsubscribed from or if it is never
+    actually assigned to, when <code>unsubscribe()</code> is called in <code>ngOnDestroy()</code>
+    it will error and break our app.
+  </p>
+
+  <p>Below are some solutions that completely avoid this issue.</p>
+
+  <h2>A solution involving (wo)man's best friend; LOOPS!</h2>
+  <p>
+    We can create an <code>Array&lt;Subscription&gt;</code> to store all our
+    subscriptions. Then we itterate over the array in the <code>ngOnDestroy()</code>
+    method. With this solution, our code is much less verbose, we don't need
+    to worry about keeping track of individual subscriptions and which one
+    has or hasn't been unsubscribed from.
+  </p>
+
+  <code class="block javascript">
+<pre>
+export class LoopSubscriptionComponent implements OnDestroy {
+  // Our subject that we will subscribe to
+  subjectA$: Subject&lt;number&gt; = new Subject&lt;number&gt;();
+
+  // An array to hold our subscriptions
+  subscriptions: Array&lt;Subscription&gt; = new Array&lt;Subscription&gt;()
+
+  constructor(){
+    // Add our subscription to
+    this.subscriptions.push(
+      this.subjectA$.subscribe(value => { 
+        // logic goes here ...
+      })
+    );
+  }
+
+  ngOnDestroy(){
+    // We loop our subscriptions array and unsubscribe
+    this.subscriptions.forEach(subscription => subscription.unsubcribe());
+  }
+
+}
+</pre>
+  </code>
+
+  <p>
+    This is the solution I used to use when I thought I was really smart and
+    cool. I have since been humbled and use the below, superior, solution.
+  </p>
+
+  <h2>
+    A better solution involving the <code>takeUntil()</code> pipeable operator.
+  </h2>
+
+  <p>
+    Using the <code>takeUntil()</code> pipeable operator, we no longer need to call <code>unsubscribe()</code>
+    on each individual subscription. This operator takes an observable as a
+    paramater, and when a value is emitted from that observable, it will
+    gracefully close the subscription is is applied to.
+  </p>
+
+  <code class="block javascript">
+    <pre>
+export class TakeUntilComponent implements OnDestroy {
+  // Our magical observable that will be passed to takeUntil()
+  private readonly ngUnsubscribe$: Subject&lt;void&gt; = new Subject&lt;void&gt;();
+
+  // Our subject that we will subscribe to
+  subjectA$: Subject&lt;number&gt; = new Subject&lt;number&gt;();
+
+  constructor() {
+    this.subjectA$
+      .pipe(takeUntil(this.ngUnsubscribe$))
+      .subscribe(value => {
+      // logic goes here ...
+    });
+  }
+
+  ngOnDestroy(){
+    // Emit a value so that takeUntil will handle the closing of our subscriptions;
+    this.ngUnsubscribe$.next();
+    // Unsubscribe from our unsubscriber to avoid creating a memory leak
+    this.ngUnsubscribe$.unsubscribe();
+  }
+
+}
+</pre>
+  </code>
+
+  <h2>Outro</h2>
+  <p>
+    Hopefully you learned something new here! I am by no means an expert but I
+    write this hoping you can skip the first 3 itterations of learning and
+    jump straight into the best pattern to work with (best being my opinion
+    ofcourse). If you know of a better pattern or solution, or if there are
+    any issues with what I have written above, please let me know!
+  </p>
 
   <footer>
     <p>
       Thanks for reading 📕👀
-      </br>
-      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a> 👋 and
-      my SaaS start-up's twitter 🚀 <a target="_blank" href="https://twitter.com/HappyHousingIE">@HappyHousingIE</a> 🚀
+      <br />
+      Please check out my twitter 👋
+      <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a>
+      👋 and my SaaS start-up's twitter 🚀
+      <a target="_blank" href="https://twitter.com/HappyHousingIE">@HappyHousingIE</a>
+      🚀
     </p>
   </footer>
-
 </body>
 
 </html>

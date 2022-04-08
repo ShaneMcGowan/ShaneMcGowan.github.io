@@ -30,3 +30,11 @@ code.html {
 span.code-green {
   color: #50fa7b;
 }
+
+span.code-red {
+  color: #ff5555;
+}
+
+span.code-blue {
+  color: #bd93f9;
+}

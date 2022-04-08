@@ -2,11 +2,10 @@
 <html>
 
 <head>
-  <title>How to use different SSH Keys for different Bitbucket (git) Repositories
-  </title>
+  <title>How to use different SSH Keys for different Bitbucket (git) Repositories</title>
   <meta charset="UTF-8">
   <meta name="author" content="Shane McGowan">
-  <meta name="description" content="__BLOG_DESCRIPTION__">
+  <meta name="description" content="A guide on how to use configure multiple ssh keys for use with GitHub">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/styles/index.css">
   <link rel="stylesheet" href="/styles/blog-post.css">
@@ -23,19 +22,150 @@
 
   <header>
     <img src="/assets/blog/2020/2020-08-02_header.webp">
-    <h1>How to use different SSH Keys for different Bitbucket (git) Repositories
+    <h1>How to use different SSH Keys for different Bitbucket (git) Repositories</h1>
+    <i>A guide on how to use configure multiple ssh keys for use with GitHub</i>
   </header>
 
-  TODO: Migrate from here
-  <a target="_blank" href="https://dev.to/shane/how-to-use-different-ssh-keys-for-different-bitbucket-git-repositories-4of0">
-    https://dev.to/shane/how-to-use-different-ssh-keys-for-different-bitbucket-git-repositories-4of0
-  </a>
+<p>
+  Bitbucket doesn't allow you to use the same SSH Key on more than one account. This means if you have more than 1 account but need to access the repositories on both (in my case a work account and a personal account) you will need to configure your SSH agent to allow you to choose which SSH Key to use when cloning over SSH.
+</p>
+
+<p>
+  Navigate to your SSH Directory
+</p>
+
+<code class="block bash">
+  <pre>
+cd ~/.ssh
+</pre>
+</code>
+
+<p>
+  Ensure SSH Agent is running
+</p>
+
+<code class="block bash">
+  <pre>
+eval $(ssh-agent)
+</pre>
+</code>
+
+<p>
+  Create your SSH Keys
+</p>
+<code class="block bash">
+  <pre>
+<span class="code-green"># Run the following replacing EMAIL_ADDRESS with the email address associated with your bitbucket account</span>
+ssh-keygen -t rsa -b 4096 -C "EMAIL_ADDRESS"
+
+<span class="code-green"># When prompted to enter a file name, enter a name to help you differentiate your two keys</span>
+Enter file in which to save the key (/c/Users/shane/.ssh/id_rsa): key-1
+</pre>
+</code>
+
+<p>
+  (optional) Remove previous SSH Keys for your SSH Agent (this does not delete the actual key from your ~/.ssh directory)
+</p>
+<code class="block bash">
+  <pre>
+ssh-add -D
+</pre>
+</code>
+
+<p>
+  Add your newly generated SSH Keys to your SSH Agent
+</p>
+
+<code class="block bash">
+  <pre>
+ssh-add ~/.ssh/key-1
+ssh-add ~/.ssh/key-2
+</pre>
+</code>
+
+<p>
+  Check that your SSH Keys have been added
+</p>
+
+<code class="block bash">
+  <pre>
+ssh-add -l
+
+<span class="code-green"># Sample output</span>
+4096 SHA256:Mo+oiomJASfjlksc6Qj0KcQpUXRVpyvsEIHdXNYDL1c user@website1.com (RSA)
+4096 SHA256:6Jt908009upoASFjjkljsflkj9iaGebl7pNr6vuezPI user@website2.com (RSA)
+</pre>
+</code>
+
+<p>
+  Create your SSH Config file
+</p>
+<code class="block bash">
+  <pre>
+touch config
+</pre>
+</code>
+
+<p>
+  The format of our SSH Config
+</p>
+
+<code class="block bash">
+  <pre>
+Host bitbucket-key-1 <span class="code-green"># Friendly name</span>
+  HostName bitbucket.org <span class="code-green"># The server we opening the SSH connection with</span>
+  User git <span class="code-green"># The SSH user (which for bitbucket is git eg. git@bitbucket.org)</span>
+  IdentityFile ~/.ssh/id_rsa <span class="code-green"># The private key file</span>
+  IdentitiesOnly yes <span class="code-green"># Tells SSH to only use keys provided by IdentityFile above</span>
+</pre>
+</code>
+
+<p>
+  Create your different SSH Configs
+</p>
+
+<code class="block bash">
+  <pre>
+<span class="code-green"># Bitbucket - SSH Key 1</span>
+Host bitbucket-key-1
+  HostName bitbucket.org  
+  User git
+  IdentityFile ~/.ssh/key-1-id_rsa
+  IdentitiesOnly yes
+
+<span class="code-green"># Bitbucket - SSH Key 2</span>
+Host bitbucket-key-2
+  HostName bitbucket.org
+  User git
+  IdentityFile ~/.ssh/key-2-id_rsa
+  IdentitiesOnly yes 
+</pre>  
+</code>
+
+<i>Important</i> At this point, reload your terminal
+
+<p>
+  Now when cloning via SSH we replace the usual host name (bitbucket.org) with our new "friendly" name
+</p>
+
+<code class="block bash">
+  <pre>
+<span class="code-red"># Usual format</span>
+git clone USER@HOST:ACCOUNT_NAME/REPOSITORY_NAME.git
+<span class="code-red"># Example</span>
+git clone git@bitbucket.org:username/repository.git
+
+<span class="code-green"># Format using our new SSH Host config (replace bitbucket.org with the user friendly host name from our .config file)</span>
+git clone git@bitbucket-key-1:username/repository.git
+</pre>
+</code>
 
   <footer>
     <p>
       Thanks for reading 📕👀
-      </br>
-      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a> 👋 and
+      <br />
+      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a>
+      👋 and
       my SaaS start-up's twitter 🚀 <a target="_blank" href="https://twitter.com/HappyHousingIE">@HappyHousingIE</a> 🚀
     </p>
   </footer>
