@@ -28,7 +28,10 @@
   <i>Java Spring CSRF Tokens VS. Postman, Who will win?</i>
 
   <p>
-    Java Spring will return a <code>403 Forbidden</code> if any request besides a <code>GET</code> request is missing a Cross Site Request Forgery Token (CSRF Token) in the <code>X-XSRF-TOKEN</code> Header. Here is how to fix that issue when using Postman. I have seen people online suggest that you disable CSRF Tokens but please don't do that. That is silly. Those people are sily.
+    Java Spring will return a <code>403 Forbidden</code> if any request besides a <code>GET</code> request is missing a
+    Cross Site Request Forgery Token (CSRF Token) in the <code>X-XSRF-TOKEN</code> Header. Here is how to fix that issue
+    when using Postman. I have seen people online suggest that you disable CSRF Tokens but please don't do that. That is
+    silly. Those people are sily.
   </p>
 
 
@@ -70,7 +73,8 @@
     <li>Create a <code>GET</code> request</li>
     <li>Navigate to the <code>Tests</code> tab</li>
     <li>Enter the following
-      <code class="block javascript">pm.environment.set("xsrf-token", decodeURIComponent(pm.cookies.get("XSRF-TOKEN")));</code>
+      <code
+        class="block javascript">pm.environment.set("xsrf-token", decodeURIComponent(pm.cookies.get("XSRF-TOKEN")));</code>
     </li>
   </ul>
 
@@ -85,7 +89,8 @@
   <ul>
     <li>Go to your request that requires the CSRF Token</li>
     <li>Navigate to the <code>Headers</code> tab</li>
-    <li>Enter a key of <code>X-XSRF-TOKEN</code> and a value of <code>{{xsrf-token}}</code>, the <code>{{xsrf-token}}</code> value will be populated from our Environment we created earlier.</li>
+    <li>Enter a key of <code>X-XSRF-TOKEN</code> and a value of <code>{{xsrf-token}}</code>, the
+      <code>{{xsrf-token}}</code> value will be populated from our Environment we created earlier.</li>
   </ul>
   <img src="/assets/blog/2020/2020-04-07_05.png" />
 
@@ -96,16 +101,14 @@
   <h2>Things to watch out for</h2>
   <ul>
     <li>Be sure you have actually selected an Environment. I have forgotten to do this several times.</li>
-    <li>Be sure to call the <code>GET</code> request again to populate the value in case it has become invalid or has expired.</li>
+    <li>Be sure to call the <code>GET</code> request again to populate the value in case it has become invalid or has
+      expired.</li>
     <li>Have a nice day</li>
   </ul>
 
   <footer>
     <p>
-      Thanks for reading 📕👀
-      <br />
-      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a> 👋 and
-      my SaaS start-up's twitter 🚀 <a target="_blank" href="https://twitter.com/HappyHousingIE">@HappyHousingIE</a> 🚀
+      👋 Feel free to reach out to me at my email <a href="mailto:hi@shanemcgowan.com">hi@shanemcgowan.com</a> 👋
     </p>
   </footer>
 

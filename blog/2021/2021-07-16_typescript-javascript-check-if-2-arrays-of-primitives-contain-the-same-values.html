@@ -6,7 +6,8 @@
   </title>
   <meta charset="UTF-8">
   <meta name="author" content="Shane McGowan">
-  <meta name="description" content="How to check if an array of primitives contains the exact same values (in any order) in JavaScript (and TypeScript)">
+  <meta name="description"
+    content="How to check if an array of primitives contains the exact same values (in any order) in JavaScript (and TypeScript)">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/styles/index.css">
   <link rel="stylesheet" href="/styles/blog-post.css">
@@ -24,7 +25,8 @@
   <header>
     <img src="/assets/blog/2020/2021-07-16_header.webp">
     <h1>TypeScript / JavaScript - Check if 2 arrays of primitives contain the same values</h1>
-    <i>How to check if an array of primitives contains the exact same values (in any order) in JavaScript (and TypeScript) </i>
+    <i>How to check if an array of primitives contains the exact same values (in any order) in JavaScript (and
+      TypeScript) </i>
   </header>
 
   <p>
@@ -32,11 +34,11 @@
   </p>
 
   <h2>Intro</h2>
-  
+
   <p>
-    How to check if an array of primitives contains the exact same values (in any order) in JavaScript (and TypeScript). 
+    How to check if an array of primitives contains the exact same values (in any order) in JavaScript (and TypeScript).
   </p>
-  
+
   <p>
     This works for primitives and object references but not the values of an object. (look up primitives in JavaScript)
   </p>
@@ -44,9 +46,9 @@
   <p>
     This can be achieved by checking if all items of Array 1 are in Array 2 and if all items of Array 2 are in Array 1
   </p>
-  
+
   <h2>Walkthrough</h2>
-  
+
   <code class="block javascript">
     <pre>
 <span class="code-green">// array 2 contains every value of Array 1</span>
@@ -63,7 +65,7 @@ if(array1containsAll === true && array2containsAll === true){
 }
     </pre>
   </code>
-  
+
   <h2> As a JavaScript function</h2>
   <code class="block javascript">
     <pre>
@@ -75,11 +77,12 @@ arraysMatch(array1, array2) {
 }
 </pre>
 </code>
-  
+
   <h2>As a TypeScript function</h2>
   <p>
     (TypeScript is for cool kids btw)
-    TypeScript doesn't have a specific type for <code>primitives</code> so swap out <code>string</code> below for whatever type you require, or <code>any</code> if you don't care too much about type safety.
+    TypeScript doesn't have a specific type for <code>primitives</code> so swap out <code>string</code> below for
+    whatever type you require, or <code>any</code> if you don't care too much about type safety.
   </p>
   <code class="block javascript">
     <pre>
@@ -94,11 +97,7 @@ arraysMatch(array1: Array<string>, array2: Array<string>): boolean {
 
   <footer>
     <p>
-      Thanks for reading 📕👀
-      <br />
-      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a>
-      👋 and
-      my SaaS start-up's twitter 🚀 <a target="_blank" href="https://twitter.com/HappyHousingIE">@HappyHousingIE</a> 🚀
+      Feel free to reach out to me at my email 👋 <a href="mailto:hi@shanemcgowan.com">hi@shanemcgowan.com</a> 👋
     </p>
   </footer>
 

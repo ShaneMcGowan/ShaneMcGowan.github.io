@@ -5,7 +5,8 @@
   <title>How to create an AWS S3 hosted Angular App with a Custom Domain, HTTPS and Continuous Deployment</title>
   <meta charset="UTF-8">
   <meta name="author" content="Shane McGowan">
-  <meta name="description" content="How to create an AWS S3 hosted Angular App with a Custom Domain, HTTPS and Continuous Deployment">
+  <meta name="description"
+    content="How to create an AWS S3 hosted Angular App with a Custom Domain, HTTPS and Continuous Deployment">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/styles/index.css">
   <link rel="stylesheet" href="/styles/blog-post.css">
@@ -24,7 +25,8 @@
 
   <p>
     <i>
-      A guide on how to host an Angular app in AWS S3 with a custom domain, HTTPS and continuous deployment from a GitHub repo. (accurate as of 16th of December 2019 _common era_)
+      A guide on how to host an Angular app in AWS S3 with a custom domain, HTTPS and continuous deployment from a
+      GitHub repo. (accurate as of 16th of December 2019 _common era_)
     </i>
   </p>
 
@@ -42,7 +44,8 @@
   <li>Create a bucket with site name (example.com)</li>
   <li>Go to the <code>'Properties'</code> tab</li>
   <li>Select <code>'Static Website'</code></li>
-  <li>Select <code>'Use this bucket to host a website'</code> and enter index.html for both Index document and Error document (for
+  <li>Select <code>'Use this bucket to host a website'</code> and enter index.html for both Index document and Error
+    document (for
     single page app)</li>
   <li>Manually add an index.html file to the bucket for testing purposes</li>
   <li>Make note of the Endpoint, we will be needing this later when setting up our CDN</li>
@@ -89,7 +92,8 @@
     <strong>Route 53 and DNS</strong>
   </p>
   <ul>
-    <li>Click <code>'Create Hosted Zone'</code> and enter your domain example.com with type <code>'Public Hosted Zone'</code></li>
+    <li>Click <code>'Create Hosted Zone'</code> and enter your domain example.com with type
+      <code>'Public Hosted Zone'</code></li>
     <li>Go to the Domain Registrar where you got your domain (eg hover.com)</li>
     <li>Copy the <code>ns</code> values from your newly created hosted zone to nameserver settings for your domain</li>
   </ul>
@@ -98,8 +102,10 @@
     <strong>AWS Certificate Manager (SSL Certs)</strong>
   </p>
   <ul>
-    <li>Ensure the <code>us-east-1</code> region is selected as Cloud Front needs this (top right of dashboard). More info on this here https://aws.amazon.com/certificate-manager/faqs/</li>
-    <li>Add your domain example.com and your domain with the <code>'www'</code> subdomain www.example.com then click <code>'Next'</code></li>
+    <li>Ensure the <code>us-east-1</code> region is selected as Cloud Front needs this (top right of dashboard). More
+      info on this here https://aws.amazon.com/certificate-manager/faqs/</li>
+    <li>Add your domain example.com and your domain with the <code>'www'</code> subdomain www.example.com then click
+      <code>'Next'</code></li>
     <li>Select <code>'DNS Validation'</code> then click <code>'Next'</code></li>
     <li>Click <code>'Review'</code></li>
     <li>Click <code>'Confirm and Request'</code></li>
@@ -113,30 +119,37 @@
   <ul>
     <li>Click <code>'Create Distribution'</code></li>
     <li>Under <code>'Web'</code> click <code>'Get Started'</code></li>
-    <li>Under <code>'Origin Domain Name'</code> enter the S3 Site Endpoint you made a note of earlier. It should be in the format <strong>bucket.name</strong>.s3-website-<strong>aws-region</strong>.amazonaws.com</li>
+    <li>Under <code>'Origin Domain Name'</code> enter the S3 Site Endpoint you made a note of earlier. It should be in
+      the format <strong>bucket.name</strong>.s3-website-<strong>aws-region</strong>.amazonaws.com</li>
     <li>Under <code>'Viewer Protocol Policy'</code>, select <code>'redirect http to https'</code></li>
-    <li>Under <code>'Price class'</code> select <code>'use only US, Canada and Europe'</code>. Users outside these regions will experience more latency but this is cheaper</li>
-    <li>Under <code>'Alternate Domain Names (CNAMEs)'</code> enter your apex domain (example.com) and then on a new line enter your domain with the <code>'www'</code> subdomain (www.example.com)</li>
-    <li>Under <code>'SSL Certificate'</code> select <code>'Custom SSL Certificate'</code> and choose the Certificate we just created in AWS Certificate Manager</li>
+    <li>Under <code>'Price class'</code> select <code>'use only US, Canada and Europe'</code>. Users outside these
+      regions will experience more latency but this is cheaper</li>
+    <li>Under <code>'Alternate Domain Names (CNAMEs)'</code> enter your apex domain (example.com) and then on a new line
+      enter your domain with the <code>'www'</code> subdomain (www.example.com)</li>
+    <li>Under <code>'SSL Certificate'</code> select <code>'Custom SSL Certificate'</code> and choose the Certificate we
+      just created in AWS Certificate Manager</li>
     <li>Under <code>'Default Root Object'</code> enter <code>'index.html'</code></li>
     <li>Click <code>'Create Distribuion'</code></li>
   </ul>
 
   <p>
     <i>
-      <strong>Note</strong>: It will take 15 to 20 minutes to create your distribution, be patient and wait before moving on to the next step.
+      <strong>Note</strong>: It will take 15 to 20 minutes to create your distribution, be patient and wait before
+      moving on to the next step.
     </i>
   </p>
 
   <p>
     <i>
-      <strong>Note</strong>: Your first 1,000 invalidation path requests each month are free, but invalidations after this will cost $0.005 per additonal path invalidated.
+      <strong>Note</strong>: Your first 1,000 invalidation path requests each month are free, but invalidations after
+      this will cost $0.005 per additonal path invalidated.
     </i>
   </p>
 
   <p>
     <i>
-      <strong>Note</strong>: You can have a max of 3,000 path invalidation requests in progress at once. A wildcard '*' request can
+      <strong>Note</strong>: You can have a max of 3,000 path invalidation requests in progress at once. A wildcard '*'
+      request can
       invalidate a max of 15 paths at once so if your app contains more than 15 files, you will need to remove each path
       manually in your deployment script, not using the wild card path.
     </i>
@@ -156,7 +169,8 @@
     <li>Repeat as above but enter <code>'www'</code> as the name this time.</li>
   </ul>
 
-  <i><strong>Note</strong>: This may take several minutes to propogate, I have experienced site without www subdomain working before
+  <i><strong>Note</strong>: This may take several minutes to propogate, I have experienced site without www subdomain
+    working before
     site with www subdomain. Eventually the www subdomain will work also so be patient.</i>
 
   <i>Your site should now be live under https://example.com and https://www.example.com</i>
@@ -168,7 +182,8 @@
     <li> Navigate to AWS Code Pipeline</li>
     <li> Enter a name for your pipeline</li>
     <li> Select <code>'New service role'</code>, the default name is fine</li>
-    <li> Ensure <code>'Allow AWS CodePipeline to create a service role so it can be used with this new pipeline'</code> is checked</li>
+    <li> Ensure <code>'Allow AWS CodePipeline to create a service role so it can be used with this new pipeline'</code>
+      is checked</li>
     <li> Click <code>'Next'</code></li>
   </ul>
   <ul>
@@ -183,18 +198,23 @@
   <ul>
     <li>In the <code>'Build provider'</code> dropdown, select <code>'AWS CodeBuild'</code></li>
     <li>In the <code>'Region'</code> dropdown, select your desired AWS region</li>
-    <li>Under <code>'Project name'</code>, click <code>'Create project'</code>. This will bring you to a popup window.</li>
+    <li>Under <code>'Project name'</code>, click <code>'Create project'</code>. This will bring you to a popup window.
+    </li>
   </ul>
 
   <ul>
     <li>In the Popup Window, under <code>'Project Name'</code> enter a desired name</li>
     <li>Under <code>'Environment image'</code> select <code>'Managed image'</code></li>
-    <li>Under <code>'Operating System'</code> select <code>'Ubuntu'</code>. This includes the language runtimes we need for building our Angular App</li>
+    <li>Under <code>'Operating System'</code> select <code>'Ubuntu'</code>. This includes the language runtimes we need
+      for building our Angular App</li>
     <li>Under <code>'Runtimes'</code> select <code>'Standard'</code></li>
-    <li>Under <code>'Image'</code> select <code>'aws/codebuild/standard:3.0'</code>. This contains NodeJS version 12 which we want.</li>
-    <li>Under <code>'Image version'</code> select <code>'Always use the latest image for this runtime version'</code></li>
+    <li>Under <code>'Image'</code> select <code>'aws/codebuild/standard:3.0'</code>. This contains NodeJS version 12
+      which we want.</li>
+    <li>Under <code>'Image version'</code> select <code>'Always use the latest image for this runtime version'</code>
+    </li>
     <li>Under <code>'Environment Type'</code> select <code>'Linux'</code></li>
-    <li>Under <code>'Service role'</code> select <code>'New Service Role'</code> and enter an appropriate name (for example 'codebuild-service-role-s3-angular')</li>
+    <li>Under <code>'Service role'</code> select <code>'New Service Role'</code> and enter an appropriate name (for
+      example 'codebuild-service-role-s3-angular')</li>
     <li>Under <code>'Build specifications'</code> select <code>'User a buildspec file'</code></li>
     <li>Click <code>'Continue to CodePipeline'</code></li>
     <li>You should be brought back to CodePipeline</li>
@@ -205,17 +225,21 @@
 
   <strong>AWS CodeBuild</strong>
   <ul>
-    <li> Create a <code>buildspec.yaml</code> file in the root of your repo. This will be used during the CodeBuild part of our CD
+    <li> Create a <code>buildspec.yaml</code> file in the root of your repo. This will be used during the CodeBuild part
+      of our CD
       pipeline to build your angular app and copy it to the root of the S3 bucket.</li>
   </ul>
 
   <i>
     Copy the following to the <code>buildspec.yaml</code> file.
     Replace <code>@SITE_NAME</code> with your site name (example.com).
-    Replace <code>@ANGULAR_APP_NAME</code> with the name of the folder which contains your angular app after running ng build which
+    Replace <code>@ANGULAR_APP_NAME</code> with the name of the folder which contains your angular app after running ng
+    build which
     can be found inside the <code>dist</code> folder for default angular apps
-    Replace <code>@ANGULAR_APP_ENVIRONMENT</code> with the build environment for your angular app, <code>prod</code> being the default value
-    Replace <code>@CLOUDFRONT_DISTRIBUTION_ID</code> with the ID of the cloudfront distrubtion you created earlier. This can be found
+    Replace <code>@ANGULAR_APP_ENVIRONMENT</code> with the build environment for your angular app, <code>prod</code>
+    being the default value
+    Replace <code>@CLOUDFRONT_DISTRIBUTION_ID</code> with the ID of the cloudfront distrubtion you created earlier. This
+    can be found
     in your Cloudfront Dashboard.
   </i>
 
@@ -270,17 +294,16 @@ env:
     <li>Click on <code>'Roles'</code></li>
     <li>In the table, click on the role that was created during the CodeBuild in the previous step.</li>
     <li>Click <code>'Attach Policy'</code></li>
-    <li>Enter <code>'S3'</code> into the search bar and click the checkbox beside <code>'AmazonS3FullAccess'</code>.</li>
-    <li>Enter <code>'CloudFront'</code> into the search bar and click the checkbox beside <code>'CloudFrontFullAccess'</code>.</li>
+    <li>Enter <code>'S3'</code> into the search bar and click the checkbox beside <code>'AmazonS3FullAccess'</code>.
+    </li>
+    <li>Enter <code>'CloudFront'</code> into the search bar and click the checkbox beside
+      <code>'CloudFrontFullAccess'</code>.</li>
     <li>Click <code>'Attach Policy'</code> to add the policy to this role.</li>
   </ul>
 
   <footer>
     <p>
-      Thanks for reading 📕👀
-      </br>
-      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a> 👋 and
-      my SaaS start-up's twitter 🚀 <a target="_blank" href="https://twitter.com/HappyHousingIE">@HappyHousingIE</a> 🚀
+      👋 Feel free to reach out to me at my email <a href="mailto:hi@shanemcgowan.com">hi@shanemcgowan.com</a> 👋
     </p>
   </footer>
 

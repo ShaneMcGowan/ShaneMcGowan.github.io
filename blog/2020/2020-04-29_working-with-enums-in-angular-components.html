@@ -42,7 +42,11 @@
     <i>You can skip the next block of text if you just want to get the actual details (I respect that)</i>
   </p>
 
-  I love using Enums in TypeScript as I am a terrible developer with a terrible memory and let my editor's auto complete do 80% of my job. Enums let you avoid using strings and having to remember what string values you used. They also allow you to lock down the values a property can be, so that a user can't just submit any value they want. So if you aren't using them, start using them, and if you are already using them, use them more, use them to a fault. Be the Enums you want to see in the world.
+  I love using Enums in TypeScript as I am a terrible developer with a terrible memory and let my editor's auto complete
+  do 80% of my job. Enums let you avoid using strings and having to remember what string values you used. They also
+  allow you to lock down the values a property can be, so that a user can't just submit any value they want. So if you
+  aren't using them, start using them, and if you are already using them, use them more, use them to a fault. Be the
+  Enums you want to see in the world.
 
   <h2>Example use of an enum for those unfamiliar</h2>
 
@@ -76,8 +80,11 @@ const property = new Property(1250, PropertyType.RANDOM_VALUE);
 </code>
 
   <p>
-    Enums can be used in your Angular templates. This is handy for situations like avoiding a hard coded set of values for a dropdown menu or displaying different content based on your component state. In my opinion, this pairs very nicely with reactive forms.
-    To make an Enum accessible in your Angular template you need to first store it in a variable in our component.ts file. For this example, we will create a simple reactive form to create a <code>Property</code>
+    Enums can be used in your Angular templates. This is handy for situations like avoiding a hard coded set of values
+    for a dropdown menu or displaying different content based on your component state. In my opinion, this pairs very
+    nicely with reactive forms.
+    To make an Enum accessible in your Angular template you need to first store it in a variable in our component.ts
+    file. For this example, we will create a simple reactive form to create a <code>Property</code>
   </p>
 
   <code class="block javascript">
@@ -117,7 +124,12 @@ export class PropertyComponent{
 </pre>
 </code>
 
-  Then in our <code>property.html</code> template, we can utilize our Enum as follows. We will use the <code>keyvalue</code> pipe. This takes our <code>PropertyType</code> enum (referenced as <code>ePropertyType</code>) and turns it into a <code>KeyValue</code> array, which we can iterate over with <code>*ngFor</code>. As we declared our <code>PropertyType</code> with a string value (ie. <code>Apartment = 'Apartment'</code>) the <code>KeyValue.key</code> and <code>KeyValue.value</code> will both contain the string value of the enum so we can use either.
+  Then in our <code>property.html</code> template, we can utilize our Enum as follows. We will use the
+  <code>keyvalue</code> pipe. This takes our <code>PropertyType</code> enum (referenced as <code>ePropertyType</code>)
+  and turns it into a <code>KeyValue</code> array, which we can iterate over with <code>*ngFor</code>. As we declared
+  our <code>PropertyType</code> with a string value (ie. <code>Apartment = 'Apartment'</code>) the
+  <code>KeyValue.key</code> and <code>KeyValue.value</code> will both contain the string value of the enum so we can use
+  either.
 
   We then can use our Enum as part of an <code>*ngIf</code> to conditionally display a message.
 
@@ -147,7 +159,8 @@ Wouldn't you prefer a nice garden?
   <h2> How to get an array of strings from an Enum </h2>
   A nice little trick to get an array of strings
   <i>
-    (<code>string[]</code>, or <code>Array&lt;string&gt;</code> if you're a cool boi like myself)_ from an Enum is to use use <code>Object.keys</code> and <code>Array.filter</code>
+    (<code>string[]</code>, or <code>Array&lt;string&gt;</code> if you're a cool boi like myself)_ from an Enum is to
+    use use <code>Object.keys</code> and <code>Array.filter</code>
   </i>
 
   <code class="block javascript">
@@ -173,10 +186,7 @@ const propertyType: Array<string> = Object.keys(PropertyType).filter(key => isNa
 
   <footer>
     <p>
-      Thanks for reading 📕👀
-      <br />
-      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a> 👋 and
-      my SaaS start-up's twitter 🚀 <a target="_blank" href="https://twitter.com/HappyHousingIE">@HappyHousingIE</a> 🚀
+      👋 Feel free to reach out to me at my email <a href="mailto:hi@shanemcgowan.com">hi@shanemcgowan.com</a> 👋
     </p>
   </footer>
 

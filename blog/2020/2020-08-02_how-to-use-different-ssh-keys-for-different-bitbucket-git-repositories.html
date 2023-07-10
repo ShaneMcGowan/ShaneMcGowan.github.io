@@ -26,34 +26,36 @@
     <i>A guide on how to use configure multiple ssh keys for use with GitHub</i>
   </header>
 
-<p>
-  Bitbucket doesn't allow you to use the same SSH Key on more than one account. This means if you have more than 1 account but need to access the repositories on both (in my case a work account and a personal account) you will need to configure your SSH agent to allow you to choose which SSH Key to use when cloning over SSH.
-</p>
+  <p>
+    Bitbucket doesn't allow you to use the same SSH Key on more than one account. This means if you have more than 1
+    account but need to access the repositories on both (in my case a work account and a personal account) you will need
+    to configure your SSH agent to allow you to choose which SSH Key to use when cloning over SSH.
+  </p>
 
-<p>
-  Navigate to your SSH Directory
-</p>
+  <p>
+    Navigate to your SSH Directory
+  </p>
 
-<code class="block bash">
+  <code class="block bash">
   <pre>
 cd ~/.ssh
 </pre>
 </code>
 
-<p>
-  Ensure SSH Agent is running
-</p>
+  <p>
+    Ensure SSH Agent is running
+  </p>
 
-<code class="block bash">
+  <code class="block bash">
   <pre>
 eval $(ssh-agent)
 </pre>
 </code>
 
-<p>
-  Create your SSH Keys
-</p>
-<code class="block bash">
+  <p>
+    Create your SSH Keys
+  </p>
+  <code class="block bash">
   <pre>
 <span class="code-green"># Run the following replacing EMAIL_ADDRESS with the email address associated with your bitbucket account</span>
 ssh-keygen -t rsa -b 4096 -C "EMAIL_ADDRESS"
@@ -63,31 +65,32 @@ Enter file in which to save the key (/c/Users/shane/.ssh/id_rsa): key-1
 </pre>
 </code>
 
-<p>
-  (optional) Remove previous SSH Keys for your SSH Agent (this does not delete the actual key from your ~/.ssh directory)
-</p>
-<code class="block bash">
+  <p>
+    (optional) Remove previous SSH Keys for your SSH Agent (this does not delete the actual key from your ~/.ssh
+    directory)
+  </p>
+  <code class="block bash">
   <pre>
 ssh-add -D
 </pre>
 </code>
 
-<p>
-  Add your newly generated SSH Keys to your SSH Agent
-</p>
+  <p>
+    Add your newly generated SSH Keys to your SSH Agent
+  </p>
 
-<code class="block bash">
+  <code class="block bash">
   <pre>
 ssh-add ~/.ssh/key-1
 ssh-add ~/.ssh/key-2
 </pre>
 </code>
 
-<p>
-  Check that your SSH Keys have been added
-</p>
+  <p>
+    Check that your SSH Keys have been added
+  </p>
 
-<code class="block bash">
+  <code class="block bash">
   <pre>
 ssh-add -l
 
@@ -97,20 +100,20 @@ ssh-add -l
 </pre>
 </code>
 
-<p>
-  Create your SSH Config file
-</p>
-<code class="block bash">
+  <p>
+    Create your SSH Config file
+  </p>
+  <code class="block bash">
   <pre>
 touch config
 </pre>
 </code>
 
-<p>
-  The format of our SSH Config
-</p>
+  <p>
+    The format of our SSH Config
+  </p>
 
-<code class="block bash">
+  <code class="block bash">
   <pre>
 Host bitbucket-key-1 <span class="code-green"># Friendly name</span>
   HostName bitbucket.org <span class="code-green"># The server we opening the SSH connection with</span>
@@ -120,11 +123,11 @@ Host bitbucket-key-1 <span class="code-green"># Friendly name</span>
 </pre>
 </code>
 
-<p>
-  Create your different SSH Configs
-</p>
+  <p>
+    Create your different SSH Configs
+  </p>
 
-<code class="block bash">
+  <code class="block bash">
   <pre>
 <span class="code-green"># Bitbucket - SSH Key 1</span>
 Host bitbucket-key-1
@@ -142,13 +145,13 @@ Host bitbucket-key-2
 </pre>  
 </code>
 
-<i>Important</i> At this point, reload your terminal
+  <i>Important</i> At this point, reload your terminal
 
-<p>
-  Now when cloning via SSH we replace the usual host name (bitbucket.org) with our new "friendly" name
-</p>
+  <p>
+    Now when cloning via SSH we replace the usual host name (bitbucket.org) with our new "friendly" name
+  </p>
 
-<code class="block bash">
+  <code class="block bash">
   <pre>
 <span class="code-red"># Usual format</span>
 git clone USER@HOST:ACCOUNT_NAME/REPOSITORY_NAME.git
@@ -162,11 +165,7 @@ git clone git@bitbucket-key-1:username/repository.git
 
   <footer>
     <p>
-      Thanks for reading 📕👀
-      <br />
-      Please check out my twitter 👋 <a target="_blank" href="https://twitter.com/theshanemcgowan">@TheShaneMcGowan</a>
-      👋 and
-      my SaaS start-up's twitter 🚀 <a target="_blank" href="https://twitter.com/HappyHousingIE">@HappyHousingIE</a> 🚀
+      👋 Feel free to reach out to me at my email <a href="mailto:hi@shanemcgowan.com">hi@shanemcgowan.com</a> 👋
     </p>
   </footer>
 
