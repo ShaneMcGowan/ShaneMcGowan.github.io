@@ -20,3 +20,8 @@ my friends and I had some fun in it while it was working with one friend even ma
 that projext became the basis for my new engine. 
 taking everything tjay i had learned about HTML5 canvas and game development, as well as some brief wxperienxe with Unity before they became really shit with their licensing and a short stint mesaing about with s&box, i decided to create a proper engine for 2D pixel art games.
 
+topics to cover
+- Full Screen mode quirks
+- Drawing at 0.5 offset
+- font antialiasing
+- getting rid of blur 
