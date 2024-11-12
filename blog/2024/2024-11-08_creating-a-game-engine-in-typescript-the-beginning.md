@@ -1,5 +1,5 @@
 ---
-title: Create a Game Engine in TypeScript - Part 1 - The Beginning
+title: Creating a Game Engine in TypeScript - Part 1 - The Beginning
 published: true
 description: The first in a series of posts where I discuss creating a Game Engine from scratch with TypeScript and HTML5 Canvas. 
 tags: TypeScript, Game Engine, HTML5 Canvas,

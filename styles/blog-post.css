@@ -2,6 +2,10 @@ img {
   width: 100%;
 }
 
+video {
+  width: 100%;
+}
+
 span.blog-post-date {
   float: right;
 }
