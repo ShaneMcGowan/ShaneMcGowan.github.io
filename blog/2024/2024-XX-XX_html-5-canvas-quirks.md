@@ -1,0 +1,3 @@
+- Drawing at 0.5 offset
+- Font antialiasing
+- getting rid of blur

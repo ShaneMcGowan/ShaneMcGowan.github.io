@@ -1,5 +1,5 @@
 ---
-title: Create a Game Engine in TypeScript - The Beginning
+title: Create a Game Engine in TypeScript - Part 1 - The Beginning
 published: true
 description: The first in a series of posts where I discuss creating a Game Engine from scratch with TypeScript and HTML5 Canvas. 
 tags: TypeScript, Game Engine, HTML5 Canvas,
@@ -12,8 +12,6 @@ This is the first post in a series where I discuss my journey in creating my own
 
 ## Why create my own game engine? 
 This all started as an ill-fated attemped to recreate the GameBoy game Pokémon Red but as in browser MMO. While I had some success in creating a cute little game where multiple players could join and walk around, the code quickly became a mess and each additional feature became a pain to implement.
-
-## TODO(shane): Insert video of the MMO here
 
 That project was left to the side while I changed jobs and I never really picked it back up again, and then heroku killed their free hosting tier so I lost interest as I didn't want to set up a new hosting / deployment pipeline for testing etc.
 My friends and I had some fun in it while it was working with one friend even making this very wholesome meme by logging in with multiple characters at the same time. 
@@ -49,25 +47,10 @@ Along side developing this engine, I am also developing my own game with it. Dev
 ## What's next?
 As I continue to develop my engine and game, I will be writing some blog posts that go into detail on some topics that I have found interesting / challenging during the development journey so far. I plan on writing about the following to start with:
 
-- Engine Structure / Game Loop
-  <!-- 
-  TODO: Move this into the engine structure blog post
-  - Current + Planned changes
-  - Scene
-  - Map
-  - SceneObject
-  - Background
-  - Game Loop
-  - Render Layers -->
+- Engine Structure
 - Full Screen mode quirks
 - HTML5 Canvas Quirks and Gotchas
- <!-- 
- - Drawing at 0.5 offset
- - Font antialiasing
- - getting rid of blur
-  -->
 - Writing an update loop with `requestAnimationFrame()`
-<!-- Time Delta -->
 - Capturing mouse, keyboard and touch events
 
 I'll update the above list with links to the blog posts once they are written so be sure to check back to see when they're written!
@@ -75,7 +58,7 @@ I'll update the above list with links to the blog posts once they are written so
 ## Can I see the Engine in action?
 Ofcourse you can!
 
-# TODO(shane): video of game engine in action
+![Engine Sample Video](../../assets/blog/2024/2024-11-08-engine-sample-video.mov)
 
 You can see the current progress of the engine here on GitHub 
 https://github.com/shanemcgowan/typescript-game-engine
