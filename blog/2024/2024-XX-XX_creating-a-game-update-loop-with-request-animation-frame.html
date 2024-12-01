@@ -114,7 +114,7 @@ frame(delta: number): void {
 Device 1: 30 FPS
 Device 2: 60 FPS
 Device 3: 120 FPS
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -126,7 +126,7 @@ Device 3: 120 FPS
 Device 1 (30 FPS): Moved by 30 
 Device 2 (60 FPS): Moved by 60 
 Device 3 (120 FPS): Moved by 120 
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -138,7 +138,7 @@ Device 3 (120 FPS): Moved by 120
 Device 1 (30 FPS): Moved by 60 
 Device 2 (60 FPS): Moved by 120 
 Device 3 (120 FPS): Moved by 240 
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -185,7 +185,7 @@ private frame(timestamp: number): void {
   // Queue up next frame
   window.requestAnimationFrame(this.frame.bind(this));
 }
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -203,7 +203,7 @@ private setDelta(timestamp: number): void {
   // store for next frame's calculation
   this.lastRenderTimestamp = timestamp;
 }
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -235,7 +235,7 @@ private firstFrame(timestamp: number): void {
 
   window.requestAnimationFrame(this.frame.bind(this));
 }
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -244,7 +244,7 @@ private firstFrame(timestamp: number): void {
 <code class="block javascript">
   <pre>
 window.requestAnimationFrame(this.firstFrame.bind(this));
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -274,7 +274,7 @@ document.addEventListener('visibilitychange', (event) => {
     // frame is inactive
   }
 });
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -297,7 +297,7 @@ private interruptedFrame(timestamp: number): void {
   // recall our frame but with our new timestamp
   window.requestAnimationFrame(this.frame.bind(this));
 }
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -320,7 +320,7 @@ private frame(timestamp: number): void {
   ...
 
 }
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -342,7 +342,7 @@ tab is active
 <span class="code-red">[delta] 4.7747 // MASSIVE delta</span>
 [timestamp] 10609.1
 [delta] 0.008700000000000728
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -367,7 +367,7 @@ frameInterrupted
 <span class="code-green">[delta] 0.008 // We no longer have that massive delta</span>
 [timestamp] 13428.2
 [delta] 0.008600000000000364
-  </pre>
+</pre>
 </code>
 
 <p>
@@ -376,7 +376,6 @@ frameInterrupted
   This delta is roughly the length of our average delta, meaning our game logic is safe from unwanted side effects. As far as our game knows, we were here all along and never tabbed out.
 </p>
 
-<footer>
 
 <p>
   You can see the current progress of the engine here on GitHub 
@@ -391,6 +390,7 @@ frameInterrupted
   Be sure to stay tuned to both as I will be updating both the engine and sample game regularly with new features / improvements.
 </p>
 
+<footer>
   <p>
     👋 Feel free to reach out to me at my email <a href="mailto:hi@shanemcgowan.com">hi@shanemcgowan.com</a> 👋
   </p>
