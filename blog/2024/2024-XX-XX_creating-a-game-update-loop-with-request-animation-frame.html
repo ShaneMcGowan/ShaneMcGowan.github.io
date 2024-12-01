@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>__BLOG_TITLE__</title>
+  <meta charset="UTF-8">
+  <meta name="author" content="Shane McGowan">
+  <meta name="description" content="__BLOG_DESCRIPTION__">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles/index.css">
+  <link rel="stylesheet" href="/styles/blog-post.css">
+  <link rel="stylesheet" href="/styles/code.css">
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- Facebook Meta Tags -->
+  <meta property="og:url" content="__BLOG_URL__">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="__BLOG_TITLE__ - __BLOG_SUBTITLE__">
+  <meta property="og:description" content="__BLOG_DESCRIPTION__">
+  <meta property="og:image" content="__BLOG_IMAGE_URL__">
+  
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="shanemcgowan.com">
+  <meta property="twitter:url" content="__BLOG_URL__">
+  <meta name="twitter:title" content="__BLOG_TITLE__ - __BLOG_SUBTITLE__">
+  <meta name="twitter:description" content="__BLOG_DESCRIPTION__">
+  <meta name="twitter:image" content="__BLOG_IMAGE_URL__">
+</head>
+
+<body>
+  <a href="/">home</a> /
+  <a href="/blog.html">blog</a>
+
+  <span class="blog-post-date">
+    <i>__BLOG_POST_DATE__</i>
+  </span>
+
+  <header></header>
+    <img src="__BLOG_IMAGE_URL__" />
+    <h1>__BLOG_TITLE__</h1>
+    <i>__BLOG_SUBTITLE__</i>
+  </header>
+
+
+<h2>What is a Game Loop</h2>
+<p>
+  A game loop is what happens and in what order per frame of our game.
+  A game loop should behave in a consistent and predictable way.
+</p>
+
+<p>
+  Our game loop currently looks like the follow (this may, and probably will change, in future but it's a good example for now).
+</p>
+
+<p>
+  We have two `frame` functions. One on the `Client` which calculates our `delta` and performs more Client specific tasks and one on our `Scene` which is concerned purely with game logic. We will discuss the `Client` one later, but for now just know it passes a `delta` value.
+</p>
+
+<code class="block javascript">
+  <pre>
+frame(delta: number): void {
+  
+  // Run the `onAwake` function for all SceneObjects that have `flags.awake` set to `false`.
+  // This will only run once per SceneObject during it's existence 
+  this.awake();
+
+  // Render the background to an in memory canvas
+  this.background(delta);
+
+  // Run the `onUpdate` function for all SceneObjects that have `flags.update` set to `true`.
+  // This will run every single frame
+  this.update(delta);
+
+  // Run the `onRender` function for all SceneObjects that have `flags.render` set to `true`.
+  // All renders will be done to an in memory canvas
+  // This will run every single frame
+  this.render(delta);
+
+  // using either a custom user defined renderer or the default renderer, the in memory canvas will be rendered to screen.
+  if (this.customRenderer) {
+    this.customRenderer(this.renderingContext);
+  } else {
+    defaultRenderer(this);
+  }
+  
+  // all objects that were marked to be destroyed throughout the scene will now be cleaned up
+  this.destroy(delta);
+}
+</pre>
+</code>
+
+<h2>
+  What is a `delta` value?
+</h2>
+
+<p>
+  As you would have noticed, we pass the `delta` value into most stages of our game loop. `delta` is the amount of time that has passed since our previous frame ran. This `delta` value will be used heavily throughout are game logic to ensure we have a consistent game experience across multiple devices.
+</p>
+
+<h2>
+  What do we need a `delta` value?
+</h2>
+
+<p>
+  We could create our game without a delta value, and our game would run fine, but our physics and other calculations would be tied to the FPS of the machine we are running on, meaning that running our game on different specs of devices would exhibit different results.
+</p>
+<p>
+  For example, for the following devices running at the following FPS:
+</p>
+
+<code class="block yaml">
+  <pre>
+Device 1: 30 FPS
+Device 2: 60 FPS
+Device 3: 120 FPS
+  </pre>
+</code>
+
+<p>
+  If our logic says to move by 1 tile per frame, after 1 second our 3 devices would be in completely different states.
+</p>
+
+<code class="block yaml">
+  <pre>
+Device 1 (30 FPS): Moved by 30 
+Device 2 (60 FPS): Moved by 60 
+Device 3 (120 FPS): Moved by 120 
+  </pre>
+</code>
+
+<p>
+  Then after another 1 second
+</p>
+
+<code class="block">
+  <pre>
+Device 1 (30 FPS): Moved by 60 
+Device 2 (60 FPS): Moved by 120 
+Device 3 (120 FPS): Moved by 240 
+  </pre>
+</code>
+
+<p>
+  This isn't ideal as we want everyone to have an equivalent experience. This issue has been seen even in high profile AAA games such as Fallout 4 by Bethesda (https://www.youtube.com/watch?v=r4EHjFkVw-s&ab_channel=SolarBear)
+</p>
+
+<p>
+  Using a `delta` avoids this issue providing a (mostly) consistent experience across different device types. With a delta value, you would decide how many tiles you want to move per second, e.g. 60 and then multiply that by value by our delta to determine what fraction of our desired speed to move by this frame. After 1 second we will have moved by 60 tiles no matter if we were running at 10fps or 10000fps.
+</p>
+
+<h2>
+  `requestAnimationFrame` and getting our `delta` value
+</h2> 
+
+<p>
+  Our game loop is based around using `requestAnimationFrame`. `requestAnimationFrame` is provided by our browser and will run a passed callback function (our frame) before the next time the browser repaints.
+  `requestAnimationFrame` passes a single argument to our callback which is the timestamp of when the last frames rendering completed. We can then compare this timestamp to the previous frame’s timestamp to see how long has passed since the last frame. This is called our `delta`. This `delta` will be used throughout our `onUpdate` functions and is crucial for performing things such as physics calculations correctly.
+</p>
+
+<p>
+  Calls to `requestAnimationFrame` are none blocking which allows us to still respond to browser events and user Inputs. If we were to create a gameloop with something like `while(true) { }` we would block up the main thread and lose access to these things, and as we all _should_ know, you __never__ block the main thread.
+</p>
+
+<h2>
+  Calculating our `delta` value
+</h2>
+<p>
+  We calculate our `delta` value as follows where the passed value `timestamp` is the timestamp of when the last frames rendering completed. This value comes from `requestAnimationFrame`.
+</p>
+
+<p>
+  This is done in our `Client` `frame` function we mentioned earlier.
+</p>
+
+<code class="block javascript">
+  <pre>
+private frame(timestamp: number): void {
+  ...
+
+  this.setDelta(timestamp);
+
+  ...
+
+  // Queue up next frame
+  window.requestAnimationFrame(this.frame.bind(this));
+}
+  </pre>
+</code>
+
+<p>
+  Where `setDelta` is calculated as below.
+</p>
+
+<code class="block javascript">
+  <pre>
+private setDelta(timestamp: number): void {
+  
+  // find the difference in milliseconds between our two timestamps
+  // we then divide by 1000 so that we can do our game logic based on seconds 
+  this.delta = (timestamp - this.lastRenderTimestamp) / 1000;
+  
+  // store for next frame's calculation
+  this.lastRenderTimestamp = timestamp;
+}
+  </pre>
+</code>
+
+<p>
+  We divide our delta value by `1000` so that we can do our game logic based on `seconds` rather than `milliseconds`.
+</p>
+
+<p>
+  For example: If we want to move by `60` tiles per second, we can set our movement speed to `60` and multiply by the `delta`. If we didn't divide by `1000` we would need to say how much we want to move per millisecond which would be `0.006` which is a bit more tedious to work with.
+</p>
+
+<h2>
+  `requestAnimationFrame` additional cases
+</h2>
+
+<h3>
+  Providing a timestamp value for the very first frame
+</h3>
+<p>
+  For the very first frame of our game, we need to perform an additional call to `requestAnimationFrame` to get a timestamp to use as our basis.
+</p>
+<p>
+  We can do this by creating a `firstFrame` function which will set a starting timestamp then start our game loop afterwards.
+</p>
+
+<code class="block javascript">
+  <pre>
+private firstFrame(timestamp: number): void {
+  this.setDelta(timestamp);
+
+  window.requestAnimationFrame(this.frame.bind(this));
+}
+  </pre>
+</code>
+
+<p>
+  To start out gameloop in this fashion, we will call the following.
+</p>
+<code class="block javascript">
+  <pre>
+window.requestAnimationFrame(this.firstFrame.bind(this));
+  </pre>
+</code>
+
+<p>
+  This avoids our first frame having a huge delta compared to all of our other frames, which could potentially lead to unexpected behaviour.
+</p>
+
+<h3>
+  Tab becoming inactive / tabbing in and out
+</h3>
+<p>
+  Modern browsers will pause execution of our game if it is in a background tab. This is not ideal if you want your game to keep running while tabbed out but browsers will start to throttle the game and potentially mess things up anyway.
+  While it would be ideal to keep our game running in the background, our engine is going to just accept this limitation for now. I may come back to this in the future but there are currently no plans.
+</p>
+<p>
+  Due to this behaviour, when our frame is interrupted by our tab becoming inactive (be it tabbing out or our device going to sleep), we need to react to the tab becoming active again and setting an appropriate delta, similar to how we do for our very first frame.
+</p>
+
+<code class="block javascript">
+  <pre>
+// this is the event we want to listen to
+document.addEventListener('visibilitychange', (event) => {
+  if (document.visibilityState === 'visible') {
+    // frame is active
+    // we want to set a flag that our next frame should calculate a new timestamp for delta
+    this.flags.frame.interrupted = false;
+  } else {
+    // frame is inactive
+  }
+});
+  </pre>
+</code>
+
+<p>
+  We don't currently do anything when the frame becomes inactive but this could be a good point to save your game state.
+</p>
+
+<p>
+  Similar to our `firstFrame` function, we will use `requestAnimationFrame` get a new timestamp.
+</p>
+
+<code class="block javascript">
+  <pre>
+private interruptedFrame(timestamp: number): void {
+  // create a new updated timestamp to base delta off
+  this.lastRenderTimestamp = timestamp;
+
+  // remove flag for frame interrupted
+  this.flags.frame.interrupted = false;
+
+  // recall our frame but with our new timestamp
+  window.requestAnimationFrame(this.frame.bind(this));
+}
+  </pre>
+</code>
+
+<p>
+  Then at the start of our `Client` `frame` function before any frame logic runs.
+</p>
+
+<code class="block javascript">
+  <pre>
+private frame(timestamp: number): void {
+  // flag has been set, we need to get a new timestamp
+  if (this.flags.frame.interrupted) {
+    
+    // call our interruptedFrame function to set a new lastRenderTimestamp
+    window.requestAnimationFrame(this.interruptedFrame.bind(this));
+    
+    // cancel this frame, interruptedFrame will kick off a new one
+    return;
+  }
+
+  ...
+
+}
+  </pre>
+</code>
+
+<p>
+  Just to demonstrate why we require both the `firstFrame` and `interruptedFrame` edgecases, see the below case:
+</p>
+
+<h4>
+  Without frame interrupted flag
+</h4>
+<code class="block yaml">
+  <pre>
+[timestamp] 5817.2
+[delta] 0.008099999999999455
+[timestamp] 5825.7
+[delta] 0.0085
+tab is inactive
+tab is active
+[timestamp] 10600.4
+<span class="code-red">[delta] 4.7747 // MASSIVE delta</span>
+[timestamp] 10609.1
+[delta] 0.008700000000000728
+  </pre>
+</code>
+
+<p>
+  The last frame before the tab went inactive had a timestamp of `5825.7` with a delta of `0.0085`.
+  The first frame after the tab became active has a timestamp of `10600.4` with a __MASSIVE__ delta of `4.7747`.
+  This is `561` times larger than our previous delta and has the potential to mess up our game's logic.
+</p>
+
+<h4>
+  With frame interrupted flag
+</h4>
+<code class="block yaml">
+  <pre>
+[timestamp] 9623.8
+[delta] 0.008399999999999637
+[timestamp] 9632.2
+[delta] 0.008400000000001455
+tab is inactive
+tab is active
+frameInterrupted
+[timestamp] 13419.6
+<span class="code-green">[delta] 0.008 // We no longer have that massive delta</span>
+[timestamp] 13428.2
+[delta] 0.008600000000000364
+  </pre>
+</code>
+
+<p>
+  The last frame before the tab went inactive had a timestamp of `9632.2` with a delta of `0.008400000000001455`
+  The first frame after the tabe became active has a timestamp of `13419.6` with a delta of `.008`.
+  This delta is roughly the length of our average delta, meaning our game logic is safe from unwanted side effects. As far as our game knows, we were here all along and never tabbed out.
+</p>
+
+<footer>
+
+<p>
+  You can see the current progress of the engine here on GitHub 
+  <a href="https://github.com/shanemcgowan/typescript-game-engine" target="_blank">https://github.com/shanemcgowan/typescript-game-engine</a>
+</p>
+
+<p>
+  You can also checkout the sample game created entirely in the engine here (code for this game is included in the git repo) <a href="https://shanemcgowan.com/typescript-game-engine/game/dist/" target="_blank">https://shanemcgowan.com/typescript-game-engine/game/dist/</a>
+</p>
+
+<p>
+  Be sure to stay tuned to both as I will be updating both the engine and sample game regularly with new features / improvements.
+</p>
+
+  <p>
+    👋 Feel free to reach out to me at my email <a href="mailto:hi@shanemcgowan.com">hi@shanemcgowan.com</a> 👋
+  </p>
+</footer>
+
+</body>
+
+</html>
