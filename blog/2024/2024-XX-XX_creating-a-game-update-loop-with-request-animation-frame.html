@@ -61,30 +61,30 @@
   <pre>
 frame(delta: number): void {
   
-  // Run the <code>onAwake</code> function for all SceneObjects that have <code>flags.awake</code> set to <code>false</code>.
-  // This will only run once per SceneObject during it's existence 
+  <span class="code-green">// Run the <code>onAwake</code> function for all SceneObjects that have <code>flags.awake</code> set to <code>false</code>.</span>
+  <span class="code-green">// This will only run once per SceneObject during it's existence </span>
   this.awake();
 
-  // Render the background to an in memory canvas
+  <span class="code-green">// Render the background to an in memory canvas </span>
   this.background(delta);
 
-  // Run the <code>onUpdate</code> function for all SceneObjects that have <code>flags.update</code> set to <code>true</code>.
-  // This will run every single frame
+  <span class="code-green">// Run the <code>onUpdate</code> function for all SceneObjects that have <code>flags.update</code> set to <code>true</code>.</span>
+  <span class="code-green">// This will run every single frame </span>
   this.update(delta);
 
-  // Run the <code>onRender</code> function for all SceneObjects that have <code>flags.render</code> set to <code>true</code>.
-  // All renders will be done to an in memory canvas
-  // This will run every single frame
+  <span class="code-green">// Run the <code>onRender</code> function for all SceneObjects that have <code>flags.render</code> set to <code>true</code>.</span>
+  <span class="code-green">// All renders will be done to an in memory canvas </span>
+  <span class="code-green">// This will run every single frame </span>
   this.render(delta);
 
-  // using either a custom user defined renderer or the default renderer, the in memory canvas will be rendered to screen.
+  <span class="code-green">// using either a custom user defined renderer or the default renderer, the in memory canvas will be rendered to screen. </span>
   if (this.customRenderer) {
     this.customRenderer(this.renderingContext);
   } else {
     defaultRenderer(this);
   }
   
-  // all objects that were marked to be destroyed throughout the scene will now be cleaned up
+  <span class="code-green">// all objects that were marked to be destroyed throughout the scene will now be cleaned up</span>
   this.destroy(delta);
 }
 </pre>
@@ -133,7 +133,7 @@ Device 3 (120 FPS): Moved by 120
   Then after another 1 second
 </p>
 
-<code class="block">
+<code class="block yaml">
   <pre>
 Device 1 (30 FPS): Moved by 60 
 Device 2 (60 FPS): Moved by 120 
@@ -182,7 +182,7 @@ private frame(timestamp: number): void {
 
   ...
 
-  // Queue up next frame
+  <span class="code-green">// Queue up next frame</span>
   window.requestAnimationFrame(this.frame.bind(this));
 }
 </pre>
@@ -196,11 +196,11 @@ private frame(timestamp: number): void {
   <pre>
 private setDelta(timestamp: number): void {
   
-  // find the difference in milliseconds between our two timestamps
-  // we then divide by 1000 so that we can do our game logic based on seconds 
+  <span class="code-green">// find the difference in milliseconds between our two timestamps</span>
+  <span class="code-green">// we then divide by 1000 so that we can do our game logic based on seconds</span>
   this.delta = (timestamp - this.lastRenderTimestamp) / 1000;
   
-  // store for next frame's calculation
+  <span class="code-green">// store for next frame's calculation</span>
   this.lastRenderTimestamp = timestamp;
 }
 </pre>
@@ -264,14 +264,14 @@ window.requestAnimationFrame(this.firstFrame.bind(this));
 
 <code class="block javascript">
   <pre>
-// this is the event we want to listen to
+    <span class="code-green">// this is the event we want to listen to</span>
 document.addEventListener('visibilitychange', (event) => {
   if (document.visibilityState === 'visible') {
-    // frame is active
-    // we want to set a flag that our next frame should calculate a new timestamp for delta
+    <span class="code-green">// frame is active</span>
+    <span class="code-green">// we want to set a flag that our next frame should calculate a new timestamp for delta</span>
     this.flags.frame.interrupted = false;
   } else {
-    // frame is inactive
+    <span class="code-green">// frame is inactive</span>
   }
 });
 </pre>
@@ -288,13 +288,13 @@ document.addEventListener('visibilitychange', (event) => {
 <code class="block javascript">
   <pre>
 private interruptedFrame(timestamp: number): void {
-  // create a new updated timestamp to base delta off
+  <span class="code-green">// create a new updated timestamp to base delta off</span>
   this.lastRenderTimestamp = timestamp;
 
-  // remove flag for frame interrupted
+  <span class="code-green">// remove flag for frame interrupted</span>
   this.flags.frame.interrupted = false;
 
-  // recall our frame but with our new timestamp
+  <span class="code-green">// recall our frame but with our new timestamp</span>
   window.requestAnimationFrame(this.frame.bind(this));
 }
 </pre>
@@ -307,13 +307,13 @@ private interruptedFrame(timestamp: number): void {
 <code class="block javascript">
   <pre>
 private frame(timestamp: number): void {
-  // flag has been set, we need to get a new timestamp
+  <span class="code-green">// flag has been set, we need to get a new timestamp</span>
   if (this.flags.frame.interrupted) {
     
-    // call our interruptedFrame function to set a new lastRenderTimestamp
+    <span class="code-green">// call our interruptedFrame function to set a new lastRenderTimestamp</span>
     window.requestAnimationFrame(this.interruptedFrame.bind(this));
     
-    // cancel this frame, interruptedFrame will kick off a new one
+    <span class="code-green">// cancel this frame, interruptedFrame will kick off a new one</span>
     return;
   }
 
