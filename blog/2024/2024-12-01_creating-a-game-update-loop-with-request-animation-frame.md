@@ -1,8 +1,9 @@
 ---
 __BLOG_TITLE__: Creating a Game Update Loop with requestAnimationFrame 
 __BLOG_SUBTITLE__: Creating a Game Engine in TypeScript - Part 2
-__BLOG_DESCRIPTION__: In this blogpost, I discuss how to create a game update loop using requestAnimationFrame to create a game experience that is consistent across both low and high power devices. This is the second in a series of posts where I discuss creating a Game Engine from scratch with TypeScript and HTML5 Canvas. 
-__BLOG_URL__:
+__BLOG_DESCRIPTION__: In this blogpost, I discuss how to create a game update loop using requestAnimationFrame to create a game experience that is consistent across both low and high power devices. This is the second in a series of posts where I discuss creating a Game Engine from scratch with TypeScript and HTML5 Canvas.
+__BLOG_POST_DATE__: December 1st, 2024
+__BLOG_URL__: https://shanemcgowan.com/blog/2024/2024-12-01_creating-a-game-update-loop-with-request-animation-frame.html
 __BLOG_IMAGE_URL__:
 ---
 
